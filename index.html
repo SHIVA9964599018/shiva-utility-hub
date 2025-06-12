@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Shiva's Utility Hub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      background-color: #333;
+      overflow: hidden;
+    }
+
+    .navbar .dropdown {
+      float: left;
+      position: relative;
+    }
+
+    .navbar .dropdown-btn {
+      font-size: 16px;
+      color: white;
+      padding: 14px 16px;
+      background-color: #333;
+      border: none;
+      cursor: pointer;
+    }
+
+    .navbar .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #444;
+      padding: 0;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .navbar .dropdown-content a {
+      color: white;
+      display: inline-block;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    .navbar .dropdown-content a:hover {
+      background-color: #555;
+    }
+
+    .navbar .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .content {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="dropdown">
+    <button class="dropdown-btn">Utilities ▼</button>
+    <div class="dropdown-content">
+      <a href="https://shiva9964599018.github.io/my-feedback-site/#calorie" target="_blank">Calorie Calculator</a>
+      <a href="https://shiva9964599018.github.io/my-feedback-site/#fuel-log" target="_blank">Fuel Log</a>
+      <a href="https://shiva9964599018.github.io/my-feedback-site/#todo" target="_blank">To-Do List</a>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <h2>Welcome to Shiva's Utility Hub</h2>
+  <p>Click any of the utility links in the top navbar to open them in a new tab.</p>
+</div>
+
+</body>
+</html>
