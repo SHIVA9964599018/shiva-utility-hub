@@ -39,9 +39,14 @@
   <a href="#" onclick="loadDynamic('gallery.html')">Gallery</a>
   <a href="#" onclick="showSection('weight-loss')">My Weight Loss Journey</a>
 
-  <a href="#" onclick="showUtilitySubSection('utility-add-dish')">Add Dish</a>
-  <a href="#" onclick="promptCalorieLogin()">Daily Calorie</a>
-  <a href="#" onclick="showUtilitySubSection('utility-food-facts')">All Food Facts</a>
+<div class="dropdown">
+  <a href="#" class="dropdown-toggle">Utilities</a>
+  <div class="dropdown-menu">
+    <a href="#" data-sub="utility-add-dish">Add Dish</a>
+    <a href="#" onclick="promptCalorieLogin()">Daily Calorie</a>
+    <a href="#" data-sub="utility-food-facts" data-load="food-facts">All Food Facts</a>
+  </div>
+</div>
 
 </nav>
 
