@@ -122,6 +122,22 @@
   <input type="password" id="passwordInput" placeholder="Password"><br><br>
   <button onclick="handleCalorieLogin()">Login</button>
 </div>
+<script>
+  function showUtilitySubSection(id) {
+    const sections = document.querySelectorAll('#utilities > div');
+    sections.forEach(s => s.style.display = 'none');
+
+    const target = document.getElementById(id);
+    if (target) {
+      target.style.display = 'block';
+    }
+  }
+
+  // Optional: Auto-show a default section
+  document.addEventListener("DOMContentLoaded", () => {
+    showUtilitySubSection("utility-add-dish");
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script type="module" src="script.js"></script>
