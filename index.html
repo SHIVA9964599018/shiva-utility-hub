@@ -1,391 +1,124 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  <title>My Website</title>
+<head>
+  <title>Shiva Utility Hub</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css"> 
+  <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4CAF50">
-	  
-<style>
-  /* Hide all non-utility sections and tabs */
-  #home,
-  #feedback,
-  #about,
-  #bike-summary,
-  #weight-loss,
-  #dynamic-section,
-  nav > a:not(.dropdown-toggle),
-  .dropdown-menu a:not([data-sub="utility-add-dish"]):not([onclick*="promptCalorieLogin"]):not([data-sub="utility-food-facts"]) {
-    display: none !important;
-  }
-</style>
-
-
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
 </head>
 <body>
-<!-- Loading Overlay -->
-<div id="loading-overlay">
-  <div class="loading-box">
-    <p>Loading bike data, please wait...</p>
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="loading-box">
+      <p>Loading utility data, please wait...</p>
+    </div>
   </div>
-</div>
 
-<nav>
-  <a href="#" onclick="showSection('home')">Home</a>
-  <a href="#" onclick="showSection('feedback')">Feedback</a>
-  <a href="#" onclick="showSection('about')">About</a>
-  <a href="#" onclick="showSection('bike-summary')">Bike Summary</a>
-  <a href="#" onclick="loadDynamic('gallery.html')">Gallery</a>
-  <a href="#" onclick="showSection('weight-loss')">My Weight Loss Journey</a>
-
-<div class="dropdown">
-  <a href="#" class="dropdown-toggle">Utilities</a>
-  <div class="dropdown-menu">
-    <a href="#" data-sub="utility-add-dish">Add Dish</a>
+  <!-- Navigation Bar -->
+  <nav>
+    <a href="#" data-sub="utility-add-dish" onclick="showUtilitySubSection('utility-add-dish')">Add Dish</a>
     <a href="#" onclick="promptCalorieLogin()">Daily Calorie</a>
-    <a href="#" data-sub="utility-food-facts" data-load="food-facts">All Food Facts</a>
-  </div>
-</div>
+    <a href="#" data-sub="utility-food-facts" onclick="showUtilitySubSection('utility-food-facts')">All Food Facts</a>
+  </nav>
 
-</nav>
-
-  <section id="home">
-    <h1 style="font-size: 2.5em; color: #2c3e50;">Hi, I'm Shiva 👋</h1>
-    <p style="font-size: 1.2em;">Welcome to my personal space on the web. Explore feedback, gallery, and more!</p>
-    <div style="max-width: 600px; margin-top: 20px;">
-      <p>I’m a Data Engineer with 10+ years of experience, currently exploring Supabase, Firebase, and modern web tech. This site is where I experiment, collect feedback, and share memories.</p>
-    </div>
-		<p style="font-weight: bold; font-size: 1.1em; margin-top: 20px;">
-		📲 Install this app for a better experience!
-		</p>
-
-	<!-- Manual Install App Button -->
-		<button id="installBtn" style="
-		display: none;
-		margin-top: 20px;
-		padding: 12px 20px;
-		font-size: 1.1em;
-		font-weight: bold;
-		background-color: #4CAF50;
-		color: white;
-		border: none;
-		border-radius: 8px;
-		box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-		cursor: pointer;
-		">
-		📱 Install this App
-		</button>
-
-    <div class="button-group" style="margin-top: 20px;">
-      <button onclick="showSection('feedback')">Leave Feedback</button>
-     <!-- <button onclick="showGalleryTab()">View Gallery</button> -->
-    </div>
-    <blockquote>“Keep it simple, keep it meaningful.” — My code and life mantra</blockquote>
-    <img src="All_images/my_intro_photo.jpg" alt="Shiva Photo" width="180" style="border-radius: 50%; margin-top: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);">
-  </section>
-
-  <section id="feedback" style="display: none;">
-    <h2>Give Your Feedback</h2>
-    <form id="feedback-form">
-      Name: <input type="text" id="name" required=""><br><br>
-      Feedback: <textarea id="feedbackText" required=""></textarea><br><br>
-      <button type="submit">Submit</button>
-    </form>
-    <p id="message"></p>
-    <h3 style="margin-top: 40px;">Previous Feedback</h3>
-    <ul id="feedback-list"><li><strong>Vinod:</strong> Nice application—it's outstanding</li><li><strong>Gurulingayya:</strong> Good</li><li><strong>Anand:</strong> Good Work</li><li><strong>Rachayya:</strong> .</li><li><strong>Rachayya:</strong> .</li><li><strong>Rachayya:</strong> .</li><li><strong>Rachayya:</strong> .</li><li><strong>Shiva:</strong> Such a Cool Website</li></ul>
-  </section>
-
-  <section id="about" style="display: none;">
-    <h2>About Me</h2>
-    <img src="All_images/my_photo.jpeg" alt="My Passport Photo" width="300" height="300">
-    <p>Welcome to my personal site! I love building web apps using Supabase and GitHub.</p>
-  </section>
-
-<!-- Somewhere inside your main layout where you want the gallery to appear -->
-<section id="dynamic-section">
-  <!-- Content from gallery.html will be injected here -->
-</section>
-
-
-
-  <div id="lightbox">
-    <span style="position:absolute; top:20px; right:30px; font-size:40px; color:white; cursor:pointer;" onclick="closeLightbox()">×</span>
-    <img id="lightbox-img">
-  <div id="lightbox-controls">
-    <button class="lightbox-button" onclick="prevImage()">◀️</button>
-    <button class="lightbox-button" onclick="nextImage()">▶️</button>
-  </div>
-  </div>
-
-  
-  <div id="lightbox" style="display: none;">
-    <img id="lightbox-img" src="" alt="Enlarged Image">
-    <button id="close-lightbox">Close</button>
-    <button id="prev-btn">Previous</button>
-    <button id="next-btn">Next</button>
-</div>
-<div>
-
-<section id="weight-loss" style="padding: 2rem; background: rgb(249, 249, 249); display: none;">
-  <h2 style="text-align:center; font-size: 2rem; color: #2c3e50;">My Weight Loss Journey</h2>
-  <p style="text-align:center; font-weight: bold; font-size: 1.2rem; color: #16a085;">
-    🎯 Total Net Loss: 3.45 kg
+  <!-- Install Prompt -->
+  <p style="font-weight: bold; font-size: 1.1em; margin-top: 20px; padding-left: 20px;">
+    📲 Install this app for a better experience!
   </p>
+  <button id="installBtn" style="
+    display: none;
+    margin: 20px;
+    padding: 12px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+  ">
+    📱 Install this App
+  </button>
 
-  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 2rem;">
-
-    <!-- Sorted by Weight (Ascending) -->
-	  <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>27-Apr-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">72.05 kg</p>
-      <img src="All_images/72.05.jpeg" alt="72.25 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.20 kg</span>
-    </div>	
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>20-Apr-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">72.25 kg</p>
-      <img src="All_images/72.25.jpeg" alt="72.25 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.15 kg</span>
-    </div>	  
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>06-Apr-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">72.40 kg</p>
-      <img src="All_images/72.40.jpg" alt="72.40 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.20 kg</span>
+  <!-- Utilities Section -->
+  <section id="utilities" style="padding:20px;">
+    <!-- Add Dish -->
+    <div id="utility-add-dish" style="display:none;">
+      <h3>Add Dish Nutrition Info</h3>
+      <form id="nutrition-form" class="nutrition-form">
+        <label>Dish Name: <input type="text" id="dish_name" required></label>
+        <label>Calories (per 100gm): <input type="number" id="calorie" step="any" required></label>
+        <label>Protein (per 100gm): <input type="number" id="protein" step="any" required></label>
+        <label>Carbs (per 100gm): <input type="number" id="carbs" step="any" required></label>
+        <label>Fibre (per 100gm): <input type="number" id="fibre" step="any" required></label>
+        <label>Fats (per 100gm): <input type="number" id="fats" step="any" required></label>
+        <button type="submit">Save Dish</button>
+      </form>
+      <p id="nutrition-message" style="margin-top: 20px;"></p>
     </div>
 
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>08-Mar-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">72.60 kg</p>
-      <img src="All_images/72.60.jpg" alt="72.60 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.40 kg</span>
-    </div>
+    <!-- Daily Calorie -->
+    <div id="utility-daily-calorie" style="display:none;">
+      <div style="display: flex; gap: 2px; align-items: flex-start;">
+        <!-- LEFT Input Section -->
+        <div style="flex: 1;">
+          <h3>Daily Calorie Calculator</h3>
+          <div><h4>Breakfast</h4><button onclick="addDishRow('breakfast')">+ Add</button></div>
+          <div id="breakfast-container"></div>
 
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>01-Mar-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">73.00 kg</p>
-      <img src="All_images/73.00.jpg" alt="73.00 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.25 kg</span>
-    </div>
+          <div><h4>Lunch</h4><button onclick="addDishRow('lunch')">+ Add</button></div>
+          <div id="lunch-container"></div>
 
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>22-Feb-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">73.25 kg</p>
-      <img src="All_images/73.25.jpg" alt="73.25 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.10 kg</span>
-    </div>
+          <div><h4>Dinner</h4><button onclick="addDishRow('dinner')">+ Add</button></div>
+          <div id="dinner-container"></div>
 
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>15-Feb-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">73.35 kg</p>
-      <img src="All_images/73.35.jpg" alt="73.35 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.25 kg</span>
-    </div>
+          <button id="calculate-btn" style="margin-top: 20px;">Calculate</button>
+          <div id="calorie-result" style="margin-top: 20px;"></div>
+        </div>
 
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>08-Feb-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">73.60 kg</p>
-      <img src="All_images/73.60.jpg" alt="73.60 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.35 kg</span>
-    </div>
-
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>01-Feb-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">73.95 kg</p>
-      <img src="All_images/73.95.jpg" alt="73.95 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−0.40 kg</span>
-    </div>
-
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>25-Jan-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">74.35 kg</p>
-      <img src="All_images/74.35.jpg" alt="74.35 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#27ae60; color:white; padding:4px 10px; border-radius:50px;">−1.15 kg</span>
-    </div>
-
-    <div style="background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:1rem; width:280px;">
-      <h3>18-Jan-2025</h3>
-      <p style="font-size:1.1rem; font-weight:bold; color:#e67e22;">75.50 kg</p>
-      <img src="All_images/75.50.jpg" alt="75.50 kg" style="width:100%; border-radius:8px; margin:0.5rem 0;">
-      <span style="background-color:#7f8c8d; color:white; padding:4px 10px; border-radius:50px;">Start</span>
-    </div>
-
-  </div>
-</section>
-	
-
-
-<!-- Bike Summary Section -->
-<section id="bike-summary">
-  <div>
-    <h2>Bike Fuel Summary</h2>
-    <img src="All_images/bike.jpg" alt="My bike Photo" width="400" height="300">
-
-    <div id="loading-message" style="display: none;">Loading bike data...</div>
-
-    <!-- Summary -->
-    <details>
-      <summary ><strong>Bike Summary</strong></summary>
-      <div id="bike-summary-data">
-        <p><strong>Total Distance:</strong> <span id="total-distance"></span> km</p>
-        <p><strong>Total Fuel:</strong> <span id="total-fuel"></span> liters</p>
-        <p><strong>Mileage:</strong> <span id="mileage"></span> km/l</p>
-        <p><strong>Total Expense:</strong> ₹<span id="total-expense"></span></p>
+        <!-- RIGHT Summary -->
+        <div style="flex: 2;">
+          <h3>Saved Dish Summary (From Supabase)</h3>
+          <table border="1" cellpadding="6" cellspacing="0" style="width: 100%;">
+            <thead><tr><th>Dish Name</th><th>Qty (g)</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fibre</th><th>Fats</th></tr></thead>
+            <tbody id="dish-summary-body"></tbody>
+          </table>
+        </div>
       </div>
-    </details>
+    </div>
 
-    <!-- Monthly -->
-    <details >
-      <summary ><strong>Monthly Expenses</strong></summary>
-      <div id="monthly-expense-data">
-        <div id="monthly-expenses-container"></div>
+    <!-- All Food Facts -->
+    <div id="utility-food-facts" style="display:none;">
+      <h3>All Food Facts</h3>
+      <div id="food-facts-table-container">
+        <table id="food-facts-table" border="1" cellspacing="0" cellpadding="6">
+          <thead><tr><th>Dish Name</th><th>Cal/100g</th><th>Protein</th><th>Carbs</th><th>Fibre</th><th>Fats</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </details>
+    </div>
+  </section>
 
-    <!-- Weekly -->
-    <details>
-      <summary ><strong>Weekly Expenses</strong></summary>
-      <div id="weekly-expense-data">
-        <p><strong>Last 7 Days:</strong> ₹<span id="weekly-expense"></span></p>
-        <div id="weekly-expenses-container"></div>
-      </div>
-    </details>
-  </div>
-</section>
-
-
-<section id="utilities" style="display:none; padding:20px;">
-  <h2>Utilities</h2>
-
-  <!-- Sub-section 1: Add Dish -->
-  <div id="utility-add-dish" style="display:none;">
-    <h3>Add Dish Nutrition Info</h3>
-    <form id="nutrition-form" class="nutrition-form">
-      <label>Dish Name: <input type="text" id="dish_name" required></label>
-      <label>Calories (per 100gm): <input type="number" id="calorie" step="any" required></label>
-      <label>Protein (per 100gm): <input type="number" id="protein" step="any" required></label>
-      <label>Carbs (per 100gm): <input type="number" id="carbs" step="any" required></label>
-      <label>Fibre (per 100gm): <input type="number" id="fibre" step="any" required></label>
-      <label>Fats (per 100gm): <input type="number" id="fats" step="any" required></label>
-      <button type="submit">Save Dish</button>
-    </form>
-    <p id="nutrition-message" style="margin-top: 20px;"></p>
+  <!-- Login Modal -->
+  <div id="loginModal" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; border:1px solid #ccc; box-shadow:0 2px 10px rgba(0,0,0,0.2); z-index:9999;">
+    <h3>Login to access Calorie Tracker</h3>
+    <input type="text" id="usernameInput" placeholder="Username"><br><br>
+    <input type="password" id="passwordInput" placeholder="Password"><br><br>
+    <button onclick="handleCalorieLogin()">Login</button>
   </div>
 
-<!-- Sub-section 2: Calorie Calculator -->
-<div id="utility-daily-calorie" style="display: none;"> <!-- 👈 Keep original ID here -->
-
-  <div style="display: flex; gap: 2px; align-items: flex-start;">
-
-
-    <!-- LEFT: Dish Input Section -->
-    <div style="flex: 1;">
-      <h3>Daily Calorie Calculator</h3>
-
-      <!-- Breakfast -->
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-        <h4 style="margin: 0;">Breakfast</h4>
-        <button type="button" onclick="addDishRow('breakfast')">+ Add</button>
-      </div>
-      <div id="breakfast-container" class="meal-container"></div>
-
-      <!-- Lunch -->
-      <div style="display: flex; align-items: center; gap: 10px; margin: 20px 0 10px;">
-        <h4 style="margin: 0;">Lunch</h4>
-        <button type="button" onclick="addDishRow('lunch')">+ Add</button>
-      </div>
-      <div id="lunch-container" class="meal-container"></div>
-
-      <!-- Dinner -->
-      <div style="display: flex; align-items: center; gap: 10px; margin: 20px 0 10px;">
-        <h4 style="margin: 0;">Dinner</h4>
-        <button type="button" onclick="addDishRow('dinner')">+ Add</button>
-      </div>
-      <div id="dinner-container" class="meal-container"></div>
-
-      <!-- Button + Total -->
-      <button type="button" id="calculate-btn" style="margin-top: 20px;">Calculate</button>
-      <div id="calorie-result" style="margin-top: 20px;"></div>
-    </div>
-
-    <!-- RIGHT: Summary Table -->
-    <div style="flex: 2;">
-      <h3>Saved Dish Summary (From Supabase)</h3>
-      <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; font-size: 14px; width: 100%;">
-        <thead style="background-color: #f0f0f0;">
-          <tr>
-            <th>Dish Name</th>
-            <th>Qty (g)</th>
-            <th>Calories</th>
-            <th>Protein</th>
-            <th>Carbs</th>
-            <th>Fibre</th>
-            <th>Fats</th>
-          </tr>
-        </thead>
-        <tbody id="dish-summary-body">
-          <!-- Populated dynamically -->
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-</div>
-
-
-
- 
-
-
-<!-- Sub-section 3: All Food Facts -->
-<div id="utility-food-facts" style="display:none;">
-  <h3>All Food Facts</h3>
-  <div id="food-facts-table-container" style="margin-left: 0; display: block;">
-    <table id="food-facts-table" border="1" cellspacing="0" cellpadding="6">
-      <thead>
-        <tr>
-          <th>Dish Name</th>
-          <th>Cal/100g</th>
-          <th>Protein</th>
-          <th>Carbs</th>
-          <th>Fibre</th>
-          <th>Fats</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</div>
-
-</section>
-<!--
-<hr>
-<h4>Calorie History</h4>
-<div id="calorie-history-container" style="margin-top: 1rem;">
-  <!-- History will be loaded here -->
-</div> 
-
-
-<!-- Login Modal -->
-<div id="loginModal" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; border:1px solid #ccc; box-shadow:0 2px 10px rgba(0,0,0,0.2); z-index:9999;">
-  <h3>Login to access Calorie Tracker</h3>
-  <input type="text" id="usernameInput" placeholder="Username"><br><br>
-  <input type="password" id="passwordInput" placeholder="Password"><br><br>
-  <button onclick="handleCalorieLogin()">Login</button>
-</div>
-
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<!-- Load your script file -->
-<script type="module" src="script.js"></script> 
-<!--<script src="gallery-loader.js"></script>	-->
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script type="module" src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('Service Worker registered'))
+        .catch(err => console.error('Service Worker error:', err));
+    }
+  </script>
 </body>
 </html>
-
