@@ -1,7 +1,7 @@
 {
   "name": "Shiva Utility Hub",
   "short_name": "Utilities",
-  "start_url": "index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
@@ -16,6 +16,14 @@
       "src": "icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot1.png",
+      "sizes": "800x600",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ]
 }
