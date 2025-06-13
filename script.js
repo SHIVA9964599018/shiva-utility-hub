@@ -1175,42 +1175,50 @@ window.addEventListener('beforeinstallprompt', (e) => {
   });
 });
 
-window.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
+  showSection("utilities");
+
   window.showSection = function (sectionId) {
     console.log(`Switching to Section: ${sectionId}`);
-
     document.querySelectorAll("section, div[id^='utility-']").forEach((section) => {
       section.style.display = "none";
     });
 
     if (sectionId.startsWith("utility-")) {
       const utilitiesSection = document.getElementById("utilities");
-      if (utilitiesSection) utilitiesSection.style.display = "block";
+      if (utilitiesSection) {
+        utilitiesSection.style.display = "block";
+      }
     }
 
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
       targetSection.style.display = "block";
-      if (sectionId === "bike-summary") loadBikeSummary();
+      console.log(`Showing: ${targetSection.id}`);
+      if (sectionId === "gallery") {
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+        if (dropdownMenu) dropdownMenu.style.display = "block";
+      }
+      if (sectionId === "bike-summary") {
+        loadBikeSummary();
+      }
+    } else {
+      console.error(`Error: Section ${sectionId} not found.`);
     }
   };
 
   window.showUtilitySubSection = function (subSectionId) {
+    console.log(`Switching to Utility Sub-section: ${subSectionId}`);
     document.querySelectorAll("div[id^='utility-']").forEach((el) => {
       el.style.display = "none";
     });
-    const subSection = document.getElementById(subSectionId);
-    if (subSection) subSection.style.display = "block";
-  };
 
-  window.promptCalorieLogin = function () {
-    if (loggedInUsername) {
-      window.showSection('utility-daily-calorie');
-      window.loadDailyDishes();
+    const subSection = document.getElementById(subSectionId);
+    if (subSection) {
+      subSection.style.display = "block";
     } else {
-      document.getElementById('loginModal').style.display = 'block';
+      console.error(`Utility sub-section '${subSectionId}' not found.`);
     }
   };
-
-  showSection("utilities");
 });
+
