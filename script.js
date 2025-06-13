@@ -484,7 +484,19 @@ installBtn.addEventListener('click', () => {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(reg => console.log("✅ SW registered"))
-    .catch(err => console.error("❌ SW registration failed:", err));
+  navigator.serviceWorker.register('service-worker.js').then(registration => {
+    console.log('✅ SW registered');
+
+    registration.onupdatefound = () => {
+      const newSW = registration.installing;
+      newSW.onstatechange = () => {
+        if (newSW.state === 'installed') {
+          if (navigator.serviceWorker.controller) {
+            console.log('🔄 New version available — reloading...');
+            window.location.reload(); // Reload to activate the new SW
+          }
+        }
+      };
+    };
+  });
 }
