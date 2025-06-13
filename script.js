@@ -1,4 +1,3 @@
-// ✅ Enable ES Module
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 // ✅ Initialize Supabase Client
@@ -10,29 +9,40 @@ const supabaseClient = createClient(
 let loggedInUsername = null;
 
 window.showSection = function (sectionId) {
-  document.querySelectorAll("section, div[id^='utility-']").forEach(el => el.style.display = "none");
+  document.querySelectorAll("section, div[id^='utility-']").forEach((el) => {
+    el.style.display = "none";
+  });
 
-  if (sectionId.startsWith("utility-")) {
-    const utilitiesSection = document.getElementById("utilities");
-    if (utilitiesSection) utilitiesSection.style.display = "block";
+  const utilitiesSection = document.getElementById("utilities");
+  if (sectionId.startsWith("utility-") && utilitiesSection) {
+    utilitiesSection.style.display = "block";
   }
 
-  const target = document.getElementById(sectionId);
-  if (target) target.style.display = "block";
-  else console.error(`Section ${sectionId} not found.`);
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.style.display = "block";
+  } else {
+    console.error(`Section ${sectionId} not found.`);
+  }
 };
 
 window.showUtilitySubSection = function (subSectionId) {
-  console.log(`Switching to Utility Sub-section: ${subSectionId}`);
-  document.querySelectorAll("div[id^='utility-']").forEach(el => el.style.display = "none");
-  const sub = document.getElementById(subSectionId);
-  if (sub) sub.style.display = "block";
-  else console.error(`Utility sub-section '${subSectionId}' not found.`);
+  document.querySelectorAll("div[id^='utility-']").forEach((el) => {
+    el.style.display = "none";
+  });
+
+  const subSection = document.getElementById(subSectionId);
+  if (subSection) {
+    subSection.style.display = "block";
+  } else {
+    console.error(`Utility sub-section '${subSectionId}' not found.`);
+  }
 };
 
 window.promptCalorieLogin = function () {
   if (loggedInUsername) {
     window.showSection("utility-daily-calorie");
+    window.loadDailyDishes();
     window.loadDishSummaryTable();
   } else {
     document.getElementById("loginModal").style.display = "block";
@@ -43,7 +53,10 @@ window.handleCalorieLogin = async function () {
   const username = document.getElementById("usernameInput").value.trim();
   const password = document.getElementById("passwordInput").value.trim();
 
-  if (!username || !password) return alert("Please enter both username and password.");
+  if (!username || !password) {
+    alert("Please enter both username and password.");
+    return;
+  }
 
   const { data, error } = await supabaseClient
     .from("app_users")
@@ -52,11 +65,15 @@ window.handleCalorieLogin = async function () {
     .eq("password", password)
     .single();
 
-  if (error || !data) return alert("Invalid username or password.");
+  if (error || !data) {
+    alert("Invalid username or password.");
+    return;
+  }
 
   loggedInUsername = data.username;
   document.getElementById("loginModal").style.display = "none";
   window.showSection("utility-daily-calorie");
+  window.loadDailyDishes();
   window.loadDishSummaryTable();
 };
 
@@ -78,7 +95,7 @@ window.getDishInfo = async function (name) {
     .select("*")
     .ilike("dish_name", name.trim());
 
-  if (!error && data?.length) return data[0];
+  if (!error && data && data.length) return data[0];
   return null;
 };
 
@@ -106,7 +123,12 @@ window.calculateCalories = async function () {
       totals.fibre += (info.fibre_per_100gm || 0) * grams / 100;
       totals.fats += (info.fats_per_100gm || 0) * grams / 100;
 
-      dishEntries.push({ date: today, meal_type: meal, dish_name: name, quantity_grams: grams });
+      dishEntries.push({
+        date: today,
+        meal_type: meal,
+        dish_name: name,
+        quantity_grams: grams
+      });
     }
   }
 
@@ -124,14 +146,19 @@ window.calculateCalories = async function () {
 
 window.saveDishRowsToDB = async function (dishEntries) {
   const today = new Date().toISOString().split("T")[0];
-  await supabaseClient.from("daily_dishes").delete().eq("date", today).eq("user_id", loggedInUsername);
+
+  await supabaseClient
+    .from("daily_dishes")
+    .delete()
+    .eq("date", today)
+    .eq("user_id", loggedInUsername);
 
   const rowsToInsert = [];
   for (const entry of dishEntries) {
     const info = await window.getDishInfo(entry.dish_name);
     if (!info) continue;
-    const factor = entry.quantity_grams / 100;
 
+    const factor = entry.quantity_grams / 100;
     rowsToInsert.push({
       user_id: loggedInUsername,
       date: today,
@@ -147,7 +174,9 @@ window.saveDishRowsToDB = async function (dishEntries) {
   }
 
   if (rowsToInsert.length) {
-    await supabaseClient.from("daily_dishes").insert(rowsToInsert);
+    await supabaseClient
+      .from("daily_dishes")
+      .insert(rowsToInsert);
   }
 };
 
@@ -159,7 +188,10 @@ window.loadDishSummaryTable = async function () {
     .eq("date", today)
     .eq("user_id", loggedInUsername);
 
-  if (error) return console.error("Error fetching dish summary:", error.message);
+  if (error) {
+    console.error("Error fetching dish summary:", error.message);
+    return;
+  }
 
   const tbody = document.getElementById("dish-summary-body");
   tbody.innerHTML = "";
@@ -195,12 +227,10 @@ window.loadFoodFacts = async function () {
         <td>${dish.fats_per_100gm || 0}</td>`;
       tbody.appendChild(row);
     });
-  } else {
-    console.error("Error fetching food facts:", error);
   }
 };
 
-// ✅ Auto run if table is visible
+// Auto-load main section
 window.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("food-facts-table")) loadFoodFacts();
+  window.showSection("utilities");
 });
