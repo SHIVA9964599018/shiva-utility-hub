@@ -7,47 +7,84 @@ const supabaseClient = createClient(
 );
 
 let loggedInUsername = null;
+window.dishNames = [];
 
-// Show section
-window.showSection = function (sectionId) {
-  document.querySelectorAll("section, div[id^='utility-']").forEach(el => el.style.display = "none");
-  if (sectionId.startsWith("utility-")) {
-    const utilitiesSection = document.getElementById("utilities");
-    if (utilitiesSection) utilitiesSection.style.display = "block";
+// ✅ Load dish name suggestions
+window.loadDishNames = async function () {
+  const { data, error } = await supabaseClient.from("food_items").select("dish_name");
+  if (!error && data) {
+    window.dishNames = data.map(d => d.dish_name);
+  } else {
+    console.error("Failed to load dish names", error);
+    window.dishNames = [];
   }
-  const target = document.getElementById(sectionId);
-  if (target) target.style.display = "block";
 };
 
-// Show utility sub-section
-window.showUtilitySubSection = function (subSectionId) {
-  document.querySelectorAll("div[id^='utility-']").forEach(el => el.style.display = "none");
-  const target = document.getElementById(subSectionId);
-  if (target) target.style.display = "block";
+// ✅ Set up autocomplete dropdown
+window.setupAutocomplete = function (input) {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("autocomplete-wrapper");
+  input.parentElement.appendChild(wrapper);
+
+  input.addEventListener("input", function () {
+    const val = input.value.trim().toLowerCase();
+    wrapper.innerHTML = "";
+    if (!val) return;
+
+    const matches = window.dishNames.filter(name =>
+      name.toLowerCase().includes(val)
+    );
+
+    matches.forEach(name => {
+      const div = document.createElement("div");
+      div.textContent = name;
+      div.className = "suggestion-item";
+      div.addEventListener("click", () => {
+        input.value = name;
+        wrapper.innerHTML = "";
+      });
+      wrapper.appendChild(div);
+    });
+  });
+
+  document.addEventListener("click", e => {
+    if (!wrapper.contains(e.target) && e.target !== input) {
+      wrapper.innerHTML = "";
+    }
+  });
 };
 
-// Add dish row
+// ✅ Add a dish row
 window.addDishRow = function (mealType, name = "", grams = "") {
   const container = document.getElementById(`${mealType}-container`);
   const row = document.createElement("div");
   row.className = "dish-row";
   row.innerHTML = `
-    <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
+    <div style="position: relative;">
+      <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
+    </div>
     <input type="number" class="dish-grams" value="${grams}" placeholder="Grams" />
-    <button type="button" onclick="this.parentElement.remove()">Remove</button>`;
+    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+  `;
   container.appendChild(row);
+
+  const input = row.querySelector(".dish-name");
+  window.setupAutocomplete(input);
 };
 
-// Get dish info
+// ✅ Fetch dish info
 window.getDishInfo = async function (name) {
   const { data, error } = await supabaseClient
     .from("food_items")
     .select("*")
     .ilike("dish_name", name.trim());
-  return (!error && data?.length) ? data[0] : null;
+
+  if (!error && data && data.length) return data[0];
+  return null;
 };
 
-// Calculate calories
+
+// ✅ Calculate total macros
 window.calculateCalories = async function () {
   const meals = ["breakfast", "lunch", "dinner"];
   let totals = { calories: 0, protein: 0, carbs: 0, fibre: 0, fats: 0 };
@@ -66,13 +103,19 @@ window.calculateCalories = async function () {
       const info = await window.getDishInfo(name);
       if (!info) continue;
 
-      totals.calories += (info.calorie_per_100gm || 0) * grams / 100;
-      totals.protein += (info.protein_per_100gm || 0) * grams / 100;
-      totals.carbs += (info.carbs_per_100gm || 0) * grams / 100;
-      totals.fibre += (info.fibre_per_100gm || 0) * grams / 100;
-      totals.fats += (info.fats_per_100gm || 0) * grams / 100;
+      const factor = grams / 100;
+      totals.calories += (info.calorie_per_100gm || 0) * factor;
+      totals.protein += (info.protein_per_100gm || 0) * factor;
+      totals.carbs += (info.carbs_per_100gm || 0) * factor;
+      totals.fibre += (info.fibre_per_100gm || 0) * factor;
+      totals.fats += (info.fats_per_100gm || 0) * factor;
 
-      dishEntries.push({ date: today, meal_type: meal, dish_name: name, quantity_grams: grams });
+      dishEntries.push({
+        date: today,
+        meal_type: meal,
+        dish_name: name,
+        quantity_grams: grams
+      });
     }
   }
 
@@ -88,15 +131,22 @@ window.calculateCalories = async function () {
   await window.loadDishSummaryTable();
 };
 
-// Save dish entries to Supabase
+// ✅ Save dish entries to DB
 window.saveDishRowsToDB = async function (dishEntries) {
   const today = new Date().toISOString().split("T")[0];
-  await supabaseClient.from("daily_dishes").delete().eq("date", today).eq("user_id", loggedInUsername);
+
+  await supabaseClient
+    .from("daily_dishes")
+    .delete()
+    .eq("date", today)
+    .eq("user_id", loggedInUsername);
 
   const rowsToInsert = [];
+
   for (const entry of dishEntries) {
     const info = await window.getDishInfo(entry.dish_name);
     if (!info) continue;
+
     const factor = entry.quantity_grams / 100;
     rowsToInsert.push({
       user_id: loggedInUsername,
