@@ -54,10 +54,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-// Automatically show the 'home' section when the page loads
+// Automatically show the 'utilitites' section when the page loads
 document.addEventListener("DOMContentLoaded", () => {
-  showSection("home"); // Change this to 'bike-summary' if you prefer that
+  showSection("utilities");
 });
+
 
 window.showSection = function (sectionId) {
   console.log(`Switching to Section: ${sectionId}`);
