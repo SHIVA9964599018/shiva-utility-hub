@@ -41,61 +41,65 @@ window.showUtilitySubSection = function (subSectionId) {
   if (target) target.style.display = "block";
 };
 
-// ✅ Load dish name suggestions
 let dishNames = [];
 
-async function loadDishNames() {
+window.loadDishNames = async function () {
   const { data, error } = await supabaseClient.from("food_items").select("dish_name");
   if (!error && data) {
     dishNames = data.map(d => d.dish_name);
   } else {
     console.error("Failed to load dish names:", error);
   }
-}
-window.loadDishNames = loadDishNames;
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadDishNames(); // make sure this is called on page load
+});
+
 
 
 // ✅ Set up autocomplete dropdown
 window.setupAutocomplete = function (input) {
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("autocomplete-wrapper");
-  wrapper.style.position = "relative";
-  input.parentElement.appendChild(wrapper);
-
-  const suggestionBox = document.createElement("div");
-  suggestionBox.classList.add("suggestion-box");
-  suggestionBox.style.position = "absolute";
-  suggestionBox.style.background = "#fff";
-  suggestionBox.style.border = "1px solid #ccc";
-  suggestionBox.style.zIndex = "1000";
-  wrapper.appendChild(suggestionBox);
-
   input.addEventListener("input", function () {
-    const val = input.value.trim().toLowerCase();
-    suggestionBox.innerHTML = "";
-    if (!val) return;
+    const val = input.value.toLowerCase();
+    const suggestions = dishNames
+      .filter(name => name.toLowerCase().includes(val))
+      .slice(0, 5); // limit suggestions
 
-    const matches = dishNames.filter(name => name.toLowerCase().includes(val));
-    matches.forEach(match => {
+    let suggestionBox = input.nextElementSibling;
+    if (!suggestionBox || !suggestionBox.classList.contains("autocomplete-box")) {
+      suggestionBox = document.createElement("div");
+      suggestionBox.className = "autocomplete-box";
+      suggestionBox.style.position = "absolute";
+      suggestionBox.style.background = "#fff";
+      suggestionBox.style.border = "1px solid #ccc";
+      suggestionBox.style.zIndex = "1000";
+      suggestionBox.style.width = input.offsetWidth + "px";
+      input.parentNode.appendChild(suggestionBox);
+    }
+
+    suggestionBox.innerHTML = "";
+    suggestions.forEach(s => {
       const div = document.createElement("div");
-      div.textContent = match;
-      div.classList.add("suggestion-item");
+      div.textContent = s;
       div.style.padding = "4px";
       div.style.cursor = "pointer";
       div.addEventListener("click", () => {
-        input.value = match;
+        input.value = s;
         suggestionBox.innerHTML = "";
       });
       suggestionBox.appendChild(div);
     });
   });
 
-  document.addEventListener("click", (e) => {
-    if (!wrapper.contains(e.target)) {
-      suggestionBox.innerHTML = "";
+  // Hide on outside click
+  document.addEventListener("click", function (e) {
+    if (!input.contains(e.target) && input.nextElementSibling?.classList.contains("autocomplete-box")) {
+      input.nextElementSibling.innerHTML = "";
     }
   });
 };
+
 
 // ✅ Add a dish row
 window.addDishRow = function (mealType, name = "", grams = "") {
@@ -104,17 +108,17 @@ window.addDishRow = function (mealType, name = "", grams = "") {
   row.className = "dish-row";
 
   row.innerHTML = `
-    <div style="position: relative;">
-      <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
-    </div>
+    <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
     <input type="number" class="dish-grams" value="${grams}" placeholder="Grams" />
-    <button type="button" onclick="this.parentElement.remove()">❌</button>
+    <button type="button" onclick="this.parentElement.remove()">Remove</button>
   `;
 
   container.appendChild(row);
-  const nameInput = row.querySelector(".dish-name");
-  window.setupAutocomplete(nameInput);
+
+  const input = row.querySelector(".dish-name");
+  setupAutocomplete(input); // 🔁 This must be called here
 };
+
 
 
 // ✅ Fetch dish info
@@ -360,6 +364,4 @@ function enableTableSorting() {
     });
   });
 }
-window.addEventListener("DOMContentLoaded", () => {
-  loadDishNames();
-});
+
