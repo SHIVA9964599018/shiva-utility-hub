@@ -61,46 +61,37 @@
     </div>
 
     <!-- Daily Calorie -->
-	  <div id="utility-daily-calorie" style="display:none;">
-	  <h3>Daily Calorie Calculator</h3>
+	<div id="utility-daily-calorie" style="display:none;">
+	  <div style="display: block;">
+		<!-- LEFT Input Section -->
+		<div>
+		  <h3>Daily Calorie Calculator</h3>
+		  <div><h4>Breakfast</h4><button onclick="addDishRow('breakfast')">+ Add</button></div>
+		  <div id="breakfast-container"></div>
 
-	  <!-- Meal Input Section -->
-	  <div>
-		<div><h4>Breakfast</h4><button onclick="addDishRow('breakfast')">+ Add</button></div>
-		<div id="breakfast-container"></div>
+		  <div><h4>Lunch</h4><button onclick="addDishRow('lunch')">+ Add</button></div>
+		  <div id="lunch-container"></div>
 
-		<div><h4>Lunch</h4><button onclick="addDishRow('lunch')">+ Add</button></div>
-		<div id="lunch-container"></div>
+		  <div><h4>Dinner</h4><button onclick="addDishRow('dinner')">+ Add</button></div>
+		  <div id="dinner-container"></div>
 
-		<div><h4>Dinner</h4><button onclick="addDishRow('dinner')">+ Add</button></div>
-		<div id="dinner-container"></div>
-	  </div>
+		  <button id="calculate-btn" style="margin-top: 20px;">Calculate</button>
+		  <div id="calorie-result" style="margin-top: 20px;"></div>
+		</div>
 
-	  <!-- Calculate Button -->
-	  <button id="calculate-btn" style="margin-top: 20px;">Calculate</button>
-
-	  <!-- Result Display -->
-	  <div id="calorie-result" style="margin-top: 20px;"></div>
-
-	  <!-- Saved Summary Table (Moved Below) -->
-	  <div style="margin-top: 30px;">
-		<h3>Saved Dish Summary (From Supabase)</h3>
-		<table border="1" cellpadding="6" cellspacing="0" style="width: 50%;">
-		  <thead>
-			<tr>
-			  <th>Dish Name</th>
-			  <th>Qty (g)</th>
-			  <th>Calories</th>
-			  <th>Protein</th>
-			  <th>Carbs</th>
-			  <th>Fibre</th>
-			  <th>Fats</th>
-			</tr>
-		  </thead>
-		  <tbody id="dish-summary-body"></tbody>
-		</table>
+		<!-- Summary BELOW -->
+		<div id="summary-container" style="display: none; margin-top: 30px;">
+		  <h3>Saved Dish Summary (From Supabase)</h3>
+		  <table border="1" cellpadding="6" cellspacing="0" style="width: 50%;">
+			<thead>
+			  <tr><th>Dish Name</th><th>Qty (g)</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fibre</th><th>Fats</th></tr>
+			</thead>
+			<tbody id="dish-summary-body"></tbody>
+		  </table>
+		</div>
 	  </div>
 	</div>
+
 
 
     <!-- All Food Facts -->
