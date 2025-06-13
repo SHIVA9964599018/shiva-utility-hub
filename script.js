@@ -8,7 +8,7 @@ const supabaseClient = createClient(
 
 // Only keeping essential DOMContentLoaded once
 document.addEventListener("DOMContentLoaded", () => {
-  showSection("utilities");
+  window.showSection("utilities");
 
   window.showSection = function (sectionId) {
     document.querySelectorAll("section, div[id^='utility-']").forEach((el) => {
