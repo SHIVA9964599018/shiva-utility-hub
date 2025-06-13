@@ -134,16 +134,17 @@ window.addDishRow = function (mealType, name = "", grams = "") {
   row.className = "dish-row";
 
   row.innerHTML = `
-    <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
-    <input type="number" class="dish-grams" value="${grams}" placeholder="Grams" />
-    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    <input type="text" class="dish-name responsive-dish-name" value="${name}" placeholder="Dish Name" />
+    <input type="number" class="dish-grams responsive-dish-grams" value="${grams}" placeholder="gms" />
+    <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✖</button>
   `;
 
   container.appendChild(row);
 
   const input = row.querySelector(".dish-name");
-  setupAutocomplete(input); // 🔁 This must be called here
+  setupAutocomplete(input); // autocomplete support
 };
+
 
 
 
