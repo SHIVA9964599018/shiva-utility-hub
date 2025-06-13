@@ -391,3 +391,9 @@ function enableTableSorting() {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("calculate-btn");
+  if (btn) {
+    btn.addEventListener("click", window.calculateCalories);
+  }
+});
