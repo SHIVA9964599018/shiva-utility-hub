@@ -245,6 +245,7 @@ window.saveDishRowsToDB = async function (dishEntries) {
 // Load summary table
 window.loadDishSummaryTable = async function () {
   const today = new Date().toISOString().split("T")[0];
+
   const { data: dishes, error } = await supabaseClient
     .from("daily_dishes")
     .select("*")
@@ -252,26 +253,50 @@ window.loadDishSummaryTable = async function () {
     .eq("user_id", loggedInUsername);
 
   if (error) {
-    console.error("Error fetching dish summary:", error.message);
+    console.error("❌ Error fetching dish summary:", error.message);
     return;
   }
 
   const tbody = document.getElementById("dish-summary-body");
   tbody.innerHTML = "";
 
+  let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFibre = 0, totalFats = 0;
+
   dishes.forEach(dish => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${dish.dish_name}</td>
-      <td>${dish.grams}</td>
+      <td>${dish.grams.toFixed(1)}</td>
       <td>${dish.calories.toFixed(1)}</td>
       <td>${dish.protein.toFixed(1)}</td>
       <td>${dish.carbs.toFixed(1)}</td>
       <td>${dish.fibre.toFixed(1)}</td>
-      <td>${dish.fats.toFixed(1)}</td>`;
+      <td>${dish.fats.toFixed(1)}</td>
+    `;
     tbody.appendChild(row);
+
+    totalCalories += dish.calories || 0;
+    totalProtein += dish.protein || 0;
+    totalCarbs += dish.carbs || 0;
+    totalFibre += dish.fibre || 0;
+    totalFats += dish.fats || 0;
   });
+
+  // ✅ Add total row
+  const totalRow = document.createElement("tr");
+  totalRow.style.backgroundColor = "#f0f0f0";
+  totalRow.style.fontWeight = "bold";
+  totalRow.innerHTML = `
+    <td colspan="2">Total</td>
+    <td>${totalCalories.toFixed(1)}</td>
+    <td>${totalProtein.toFixed(1)}</td>
+    <td>${totalCarbs.toFixed(1)}</td>
+    <td>${totalFibre.toFixed(1)}</td>
+    <td>${totalFats.toFixed(1)}</td>
+  `;
+  tbody.appendChild(totalRow);
 };
+
 
 // Login handlers
 window.promptCalorieLogin = function () {
