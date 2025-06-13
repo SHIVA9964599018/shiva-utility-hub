@@ -1,10 +1,11 @@
 {
-  "name": "My Feedback Site",
-  "short_name": "Feedback",
-  "start_url": ".",
+  "name": "Shiva Utility Hub",
+  "short_name": "Utilities",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icons/icon-192.png",
