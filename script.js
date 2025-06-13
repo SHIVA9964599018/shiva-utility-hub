@@ -176,3 +176,21 @@ window.handleCalorieLogin = async function () {
   window.showSection('utility-daily-calorie');
   window.loadDishSummaryTable();
 };
+
+// ✅ Define globally accessible function immediately
+window.showUtilitySubSection = function (subSectionId) {
+  console.log(`Switching to Utility Sub-section: ${subSectionId}`);
+
+  // Hide all utility sub-sections
+  document.querySelectorAll("div[id^='utility-']").forEach((el) => {
+    el.style.display = "none";
+  });
+
+  // Show the selected sub-section
+  const subSection = document.getElementById(subSectionId);
+  if (subSection) {
+    subSection.style.display = "block";
+  } else {
+    console.error(`Utility sub-section '${subSectionId}' not found.`);
+  }
+};
