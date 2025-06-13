@@ -34,6 +34,13 @@ window.showSection = function (sectionId) {
   }
 };
 
+// Show utility sub-section
+window.showUtilitySubSection = function (subSectionId) {
+  document.querySelectorAll("div[id^='utility-']").forEach(el => el.style.display = "none");
+  const target = document.getElementById(subSectionId);
+  if (target) target.style.display = "block";
+};
+
 // ✅ Load dish name suggestions
 window.loadDishNames = async function () {
   const { data, error } = await supabaseClient.from("food_items").select("dish_name");
