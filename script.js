@@ -1,13 +1,15 @@
+// ✅ Import Supabase
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 // ✅ Initialize Supabase Client
 const supabaseClient = createClient(
-    "https://wzgchcvyzskespcfrjvi.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Z2NoY3Z5enNrZXNwY2ZyanZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4NjQwNDEsImV4cCI6MjA1NzQ0MDA0MX0.UuAgu4quD9Vg80tOUSkfGJ4doOT0CUFEUeoHsiyeNZQ"
+  "https://wzgchcvyzskespcfrjvi.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Z2NoY3Z5enNrZXNwY2ZyanZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4NjQwNDEsImV4cCI6MjA1NzQ0MDA0MX0.UuAgu4quD9Vg80tOUSkfGJ4doOT0CUFEUeoHsiyeNZQ"
 );
 
 let loggedInUsername = null;
 
+// ✅ Global function bindings (required in module)
 window.addDishRow = function (mealType, name = "", grams = "") {
   const container = document.getElementById(`${mealType}-container`);
   const row = document.createElement("div");
@@ -25,7 +27,6 @@ window.getDishInfo = async function (name) {
     .from("food_items")
     .select("*")
     .ilike("dish_name", name.trim());
-
   if (!error && data && data.length) return data[0];
   return null;
 };
@@ -105,9 +106,7 @@ window.saveDishRowsToDB = async function (dishEntries) {
   }
 
   if (rowsToInsert.length) {
-    await supabaseClient
-      .from("daily_dishes")
-      .insert(rowsToInsert);
+    await supabaseClient.from("daily_dishes").insert(rowsToInsert);
   }
 };
 
@@ -177,16 +176,13 @@ window.handleCalorieLogin = async function () {
   window.loadDishSummaryTable();
 };
 
-// ✅ Define globally accessible function immediately
 window.showUtilitySubSection = function (subSectionId) {
   console.log(`Switching to Utility Sub-section: ${subSectionId}`);
 
-  // Hide all utility sub-sections
   document.querySelectorAll("div[id^='utility-']").forEach((el) => {
     el.style.display = "none";
   });
 
-  // Show the selected sub-section
   const subSection = document.getElementById(subSectionId);
   if (subSection) {
     subSection.style.display = "block";
@@ -194,3 +190,28 @@ window.showUtilitySubSection = function (subSectionId) {
     console.error(`Utility sub-section '${subSectionId}' not found.`);
   }
 };
+
+window.showSection = function (sectionId) {
+  document.querySelectorAll("section, div[id^='utility-']").forEach((el) => {
+    el.style.display = "none";
+  });
+
+  if (sectionId.startsWith("utility-")) {
+    const utilitiesSection = document.getElementById("utilities");
+    if (utilitiesSection) {
+      utilitiesSection.style.display = "block";
+    }
+  }
+
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.style.display = "block";
+  } else {
+    console.error(`Section ${sectionId} not found.`);
+  }
+};
+
+// Load utility section by default
+window.addEventListener("DOMContentLoaded", () => {
+  window.showSection("utility-add-dish");
+});
