@@ -460,3 +460,22 @@ window.loadDailyDishes = async function () {
       });
   });
 };
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const installBtn = document.getElementById("installAppBtn");
+  if (installBtn) {
+    installBtn.style.display = "inline-block";
+    installBtn.addEventListener("click", async () => {
+      installBtn.style.display = "none";
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response: ${outcome}`);
+      deferredPrompt = null;
+    });
+  }
+});
+
