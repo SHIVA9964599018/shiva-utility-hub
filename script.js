@@ -42,46 +42,57 @@ window.showUtilitySubSection = function (subSectionId) {
 };
 
 // ✅ Load dish name suggestions
-window.loadDishNames = async function () {
+let dishNames = [];
+
+async function loadDishNames() {
   const { data, error } = await supabaseClient.from("food_items").select("dish_name");
   if (!error && data) {
-    window.dishNames = data.map(d => d.dish_name);
+    dishNames = data.map(d => d.dish_name);
   } else {
-    console.error("Failed to load dish names", error);
-    window.dishNames = [];
+    console.error("Failed to load dish names:", error);
   }
-};
+}
+window.loadDishNames = loadDishNames;
+
 
 // ✅ Set up autocomplete dropdown
 window.setupAutocomplete = function (input) {
   const wrapper = document.createElement("div");
   wrapper.classList.add("autocomplete-wrapper");
+  wrapper.style.position = "relative";
   input.parentElement.appendChild(wrapper);
+
+  const suggestionBox = document.createElement("div");
+  suggestionBox.classList.add("suggestion-box");
+  suggestionBox.style.position = "absolute";
+  suggestionBox.style.background = "#fff";
+  suggestionBox.style.border = "1px solid #ccc";
+  suggestionBox.style.zIndex = "1000";
+  wrapper.appendChild(suggestionBox);
 
   input.addEventListener("input", function () {
     const val = input.value.trim().toLowerCase();
-    wrapper.innerHTML = "";
+    suggestionBox.innerHTML = "";
     if (!val) return;
 
-    const matches = window.dishNames.filter(name =>
-      name.toLowerCase().includes(val)
-    );
-
-    matches.forEach(name => {
+    const matches = dishNames.filter(name => name.toLowerCase().includes(val));
+    matches.forEach(match => {
       const div = document.createElement("div");
-      div.textContent = name;
-      div.className = "suggestion-item";
+      div.textContent = match;
+      div.classList.add("suggestion-item");
+      div.style.padding = "4px";
+      div.style.cursor = "pointer";
       div.addEventListener("click", () => {
-        input.value = name;
-        wrapper.innerHTML = "";
+        input.value = match;
+        suggestionBox.innerHTML = "";
       });
-      wrapper.appendChild(div);
+      suggestionBox.appendChild(div);
     });
   });
 
-  document.addEventListener("click", e => {
-    if (!wrapper.contains(e.target) && e.target !== input) {
-      wrapper.innerHTML = "";
+  document.addEventListener("click", (e) => {
+    if (!wrapper.contains(e.target)) {
+      suggestionBox.innerHTML = "";
     }
   });
 };
