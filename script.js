@@ -461,21 +461,25 @@ window.loadDailyDishes = async function () {
   });
 };
 let deferredPrompt;
+const installBtn = document.getElementById('installApp');
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
+// Listen for the install prompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault(); // Prevent auto-prompt
   deferredPrompt = e;
+  installBtn.style.display = 'inline-block'; // Show the button
+});
 
-  const installBtn = document.getElementById("installAppBtn");
-  if (installBtn) {
-    installBtn.style.display = "inline-block";
-    installBtn.addEventListener("click", async () => {
-      installBtn.style.display = "none";
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response: ${outcome}`);
+// Handle click on install button
+installBtn.addEventListener('click', () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choiceResult => {
+      console.log('User response to the install prompt:', choiceResult.outcome);
       deferredPrompt = null;
+      installBtn.style.display = 'none';
     });
   }
 });
+
 
