@@ -526,18 +526,37 @@ blockquote {
 }
 
 
+
+
+
+.install-highlight {
+  font-size: 24px;
+  padding: 15px 30px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  animation: pulse 1.2s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  margin: 20px auto;
+  display: block;
+}
+
 @keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); }
-  70% { transform: scale(1.05); box-shadow: 0 0 15px rgba(76, 175, 80, 0.7); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(76, 175, 80, 0.7); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  }
 }
-
-#installBtn {
-  animation: pulse 2s infinite;
-}
-
-
-
 
 
 
