@@ -185,6 +185,7 @@ window.loadFoodFacts = async function () {
   const { data, error } = await supabaseClient.from("food_items").select("*");
   const tbody = document.querySelector("#food-facts-table tbody");
   tbody.innerHTML = "";
+
   if (!error && data) {
     data.forEach(dish => {
       const row = document.createElement("tr");
@@ -197,8 +198,10 @@ window.loadFoodFacts = async function () {
         <td>${dish.fats_per_100gm || 0}</td>`;
       tbody.appendChild(row);
     });
+    enableTableSorting();  // <-- important call added here
   }
 };
+
 
 // Show 'utilities' section on load
 document.addEventListener("DOMContentLoaded", () => {
@@ -240,3 +243,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function enableTableSorting() {
+  const table = document.getElementById("food-facts-table");
+  const headers = table.querySelectorAll("th");
+  const tbody = table.querySelector("tbody");
+
+  headers.forEach((header, index) => {
+    header.style.cursor = "pointer";
+    header.addEventListener("click", () => {
+      const isAsc = header.classList.contains("asc");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) => {
+        const aVal = parseFloat(a.children[index].textContent) || a.children[index].textContent.toLowerCase();
+        const bVal = parseFloat(b.children[index].textContent) || b.children[index].textContent.toLowerCase();
+        return (isAsc ? (bVal > aVal ? 1 : -1) : (aVal > bVal ? 1 : -1));
+      });
+      headers.forEach(h => h.classList.remove("asc", "desc"));
+      header.classList.add(isAsc ? "desc" : "asc");
+      rows.forEach(row => tbody.appendChild(row));
+    });
+  });
+}
