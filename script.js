@@ -9,6 +9,31 @@ const supabaseClient = createClient(
 let loggedInUsername = null;
 window.dishNames = [];
 
+window.showSection = function (sectionId) {
+  console.log(`Switching to Section: ${sectionId}`);
+
+  // Hide all sections
+  document.querySelectorAll("section, div[id^='utility-']").forEach((el) => {
+    el.style.display = "none";
+  });
+
+  // Show main utility section if needed
+  if (sectionId.startsWith("utility-")) {
+    const utilitiesSection = document.getElementById("utilities");
+    if (utilitiesSection) {
+      utilitiesSection.style.display = "block";
+    }
+  }
+
+  // Show the requested section
+  const targetSection = document.getElementById(sectionId);
+  if (targetSection) {
+    targetSection.style.display = "block";
+  } else {
+    console.error(`Section '${sectionId}' not found`);
+  }
+};
+
 // ✅ Load dish name suggestions
 window.loadDishNames = async function () {
   const { data, error } = await supabaseClient.from("food_items").select("dish_name");
