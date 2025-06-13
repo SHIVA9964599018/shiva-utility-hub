@@ -6,7 +6,6 @@ const supabaseClient = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Z2NoY3Z5enNrZXNwY2ZyanZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4NjQwNDEsImV4cCI6MjA1NzQ0MDA0MX0.UuAgu4quD9Vg80tOUSkfGJ4doOT0CUFEUeoHsiyeNZQ"
 );
 
-let loggedInUsername = null;
 window.dishNames = [];
 
 window.showSection = function (sectionId) {
@@ -220,12 +219,19 @@ window.calculateCalories = async function () {
 // ✅ Save dish entries to DB
 window.saveDishRowsToDB = async function (dishEntries) {
   const today = new Date().toISOString().split("T")[0];
+  const userId = localStorage.getItem("user_id");
 
+  if (!userId) {
+    console.error("❌ No user_id found in localStorage");
+    return;
+  }
+
+  // Delete existing dishes for this user and date
   await supabaseClient
     .from("daily_dishes")
     .delete()
     .eq("date", today)
-    .eq("user_id", loggedInUsername);
+    .eq("user_id", userId);
 
   const rowsToInsert = [];
 
@@ -235,7 +241,7 @@ window.saveDishRowsToDB = async function (dishEntries) {
 
     const factor = entry.quantity_grams / 100;
     rowsToInsert.push({
-      user_id: loggedInUsername,
+      user_id: userId,
       date: today,
       meal_type: entry.meal_type,
       dish_name: entry.dish_name,
@@ -253,15 +259,22 @@ window.saveDishRowsToDB = async function (dishEntries) {
   }
 };
 
+
 // Load summary table
 window.loadDishSummaryTable = async function () {
   const today = new Date().toISOString().split("T")[0];
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    console.error("❌ No user_id found in localStorage");
+    return;
+  }
 
   const { data: dishes, error } = await supabaseClient
     .from("daily_dishes")
     .select("*")
     .eq("date", today)
-    .eq("user_id", loggedInUsername);
+    .eq("user_id", userId);
 
   if (error) {
     console.error("❌ Error fetching dish summary:", error.message);
@@ -293,7 +306,6 @@ window.loadDishSummaryTable = async function () {
     totalFats += dish.fats || 0;
   });
 
-  // ✅ Add total row
   const totalRow = document.createElement("tr");
   totalRow.style.backgroundColor = "#f0f0f0";
   totalRow.style.fontWeight = "bold";
@@ -311,13 +323,16 @@ window.loadDishSummaryTable = async function () {
 
 // Login handlers
 window.promptCalorieLogin = function () {
-  if (loggedInUsername) {
+  const userId = localStorage.getItem("user_id");
+
+  if (userId) {
     window.showSection('utility-daily-calorie');
     window.loadDishSummaryTable();
   } else {
     document.getElementById('loginModal').style.display = 'block';
   }
 };
+
 
 window.handleCalorieLogin = async function () {
   const username = document.getElementById("usernameInput").value.trim();
@@ -335,7 +350,7 @@ window.handleCalorieLogin = async function () {
     return;
   }
 
-  loggedInUsername = data.username;
+ // loggedInUsername = data.username;
   document.getElementById("loginModal").style.display = "none";
   window.showSection('utility-daily-calorie');
   window.loadDishSummaryTable();
@@ -437,12 +452,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.loadDailyDishes = async function () {
   const today = new Date().toISOString().split("T")[0];
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    console.error("❌ No user_id found in localStorage");
+    return;
+  }
 
   const { data, error } = await supabaseClient
     .from("daily_dishes")
     .select("*")
     .eq("date", today)
-    .eq("user_id", loggedInUsername);
+    .eq("user_id", userId);
 
   if (error) {
     console.error("Error loading daily dishes:", error);
@@ -461,6 +482,7 @@ window.loadDailyDishes = async function () {
       });
   });
 };
+
 let deferredPrompt;
 const installBtn = document.getElementById('installApp');
 
@@ -500,3 +522,5 @@ if ('serviceWorker' in navigator) {
     };
   });
 }
+
+localStorage.setItem("user_id", data.username);
