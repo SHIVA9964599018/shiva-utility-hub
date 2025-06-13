@@ -8,8 +8,6 @@ const supabaseClient = createClient(
 
 // Only keeping essential DOMContentLoaded once
 document.addEventListener("DOMContentLoaded", () => {
-  window.showSection("utilities");
-
   window.showSection = function (sectionId) {
     document.querySelectorAll("section, div[id^='utility-']").forEach((el) => {
       el.style.display = "none";
@@ -42,4 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(`Utility sub-section '${subSectionId}' not found.`);
     }
   };
+
+  // ✅ Call after function is defined
+  window.showSection("utilities");
 });
