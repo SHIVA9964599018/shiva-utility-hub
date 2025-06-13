@@ -303,6 +303,8 @@ window.handleCalorieLogin = async function () {
   document.getElementById("loginModal").style.display = "none";
   window.showSection('utility-daily-calorie');
   window.loadDishSummaryTable();
+  await window.loadDailyDishes();
+
 };
 
 // Load food facts
@@ -397,3 +399,29 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", window.calculateCalories);
   }
 });
+window.loadDailyDishes = async function () {
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabaseClient
+    .from("daily_dishes")
+    .select("*")
+    .eq("date", today)
+    .eq("user_id", loggedInUsername);
+
+  if (error) {
+    console.error("Error loading daily dishes:", error);
+    return;
+  }
+
+  const meals = ["breakfast", "lunch", "dinner"];
+  meals.forEach(meal => {
+    const container = document.getElementById(`${meal}-container`);
+    container.innerHTML = ""; // Clear old rows
+
+    data
+      .filter(d => d.meal_type === meal)
+      .forEach(dish => {
+        window.addDishRow(meal, dish.dish_name, dish.grams);
+      });
+  });
+};
