@@ -102,18 +102,20 @@ window.addDishRow = function (mealType, name = "", grams = "") {
   const container = document.getElementById(`${mealType}-container`);
   const row = document.createElement("div");
   row.className = "dish-row";
+
   row.innerHTML = `
     <div style="position: relative;">
       <input type="text" class="dish-name" value="${name}" placeholder="Dish Name" />
     </div>
     <input type="number" class="dish-grams" value="${grams}" placeholder="Grams" />
-    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    <button type="button" onclick="this.parentElement.remove()">❌</button>
   `;
-  container.appendChild(row);
 
-  const input = row.querySelector(".dish-name");
-  window.setupAutocomplete(input);
+  container.appendChild(row);
+  const nameInput = row.querySelector(".dish-name");
+  window.setupAutocomplete(nameInput);
 };
+
 
 // ✅ Fetch dish info
 window.getDishInfo = async function (name) {
@@ -358,3 +360,6 @@ function enableTableSorting() {
     });
   });
 }
+window.addEventListener("DOMContentLoaded", () => {
+  loadDishNames();
+});
