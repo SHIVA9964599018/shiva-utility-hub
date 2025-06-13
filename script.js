@@ -58,47 +58,73 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-// ✅ Set up autocomplete dropdown
 window.setupAutocomplete = function (input) {
-  input.addEventListener("input", function () {
-    const val = input.value.toLowerCase();
-    const suggestions = dishNames
-      .filter(name => name.toLowerCase().includes(val))
-      .slice(0, 5); // limit suggestions
+  // Wrap input in a relative container
+  const wrapper = document.createElement("div");
+  wrapper.style.position = "relative";
+  input.parentNode.insertBefore(wrapper, input);
+  wrapper.appendChild(input);
 
-    let suggestionBox = input.nextElementSibling;
-    if (!suggestionBox || !suggestionBox.classList.contains("autocomplete-box")) {
-      suggestionBox = document.createElement("div");
-      suggestionBox.className = "autocomplete-box";
-      suggestionBox.style.position = "absolute";
-      suggestionBox.style.background = "#fff";
-      suggestionBox.style.border = "1px solid #ccc";
-      suggestionBox.style.zIndex = "1000";
-      suggestionBox.style.width = input.offsetWidth + "px";
-      input.parentNode.appendChild(suggestionBox);
+  // Create dropdown box
+  const box = document.createElement("div");
+  box.className = "autocomplete-box";
+  box.style.position = "absolute";
+  box.style.top = input.offsetHeight + "px";
+  box.style.left = "0";
+  box.style.right = "0";
+  box.style.zIndex = "9999";
+  box.style.background = "white";
+  box.style.border = "1px solid #ccc";
+  box.style.borderTop = "none";
+  box.style.maxHeight = "150px";
+  box.style.overflowY = "auto";
+  box.style.display = "none";
+
+  wrapper.appendChild(box);
+
+  input.addEventListener("input", function () {
+    const val = input.value.trim().toLowerCase();
+    box.innerHTML = "";
+
+    if (!val) {
+      box.style.display = "none";
+      return;
     }
 
-    suggestionBox.innerHTML = "";
-    suggestions.forEach(s => {
+    const matches = dishNames.filter(name =>
+      name.toLowerCase().includes(val)
+    ).slice(0, 10);
+
+    if (matches.length === 0) {
+      box.style.display = "none";
+      return;
+    }
+
+    matches.forEach(match => {
       const div = document.createElement("div");
-      div.textContent = s;
-      div.style.padding = "4px";
+      div.textContent = match;
+      div.style.padding = "6px";
       div.style.cursor = "pointer";
+      div.style.borderBottom = "1px solid #eee";
       div.addEventListener("click", () => {
-        input.value = s;
-        suggestionBox.innerHTML = "";
+        input.value = match;
+        box.innerHTML = "";
+        box.style.display = "none";
       });
-      suggestionBox.appendChild(div);
+      box.appendChild(div);
     });
+
+    box.style.display = "block";
   });
 
-  // Hide on outside click
+  // Hide when clicking outside
   document.addEventListener("click", function (e) {
-    if (!input.contains(e.target) && input.nextElementSibling?.classList.contains("autocomplete-box")) {
-      input.nextElementSibling.innerHTML = "";
+    if (!wrapper.contains(e.target)) {
+      box.style.display = "none";
     }
   });
 };
+
 
 
 // ✅ Add a dish row
