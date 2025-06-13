@@ -204,3 +204,39 @@ window.loadFoodFacts = async function () {
 document.addEventListener("DOMContentLoaded", () => {
   window.showSection("utilities");
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("nutrition-form");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const dishName = document.getElementById("dish_name").value.trim();
+      const calorie = parseFloat(document.getElementById("calorie").value);
+      const protein = parseFloat(document.getElementById("protein").value);
+      const carbs = parseFloat(document.getElementById("carbs").value);
+      const fibre = parseFloat(document.getElementById("fibre").value);
+      const fats = parseFloat(document.getElementById("fats").value);
+
+      const { error } = await supabaseClient.from("food_items").insert([
+        {
+          dish_name: dishName,
+          calorie_per_100gm: calorie,
+          protein_per_100gm: protein,
+          carbs_per_100gm: carbs,
+          fibre_per_100gm: fibre,
+          fats_per_100gm: fats
+        }
+      ]);
+
+      const message = document.getElementById("nutrition-message");
+      if (error) {
+        message.textContent = "❌ Failed to save dish.";
+        message.style.color = "red";
+      } else {
+        message.textContent = "✅ Dish saved successfully.";
+        message.style.color = "green";
+        form.reset();
+      }
+    });
+  }
+});
