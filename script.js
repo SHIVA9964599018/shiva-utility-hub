@@ -194,6 +194,7 @@ window.calculateCalories = async function () {
     }
   }
 
+  // Show calculated totals
   document.getElementById("calorie-result").innerHTML = `
     <strong>Total:</strong><br>
     Calories: ${totals.calories.toFixed(2)} kcal<br>
@@ -202,9 +203,18 @@ window.calculateCalories = async function () {
     Fibre: ${totals.fibre.toFixed(2)} g<br>
     Fats: ${totals.fats.toFixed(2)} g`;
 
+  // Save to DB and show summary
   await window.saveDishRowsToDB(dishEntries);
+
+  const summaryContainer = document.getElementById("summary-container");
+  summaryContainer.style.display = "block";
   await window.loadDishSummaryTable();
+
+  // Scroll to summary smoothly
+  summaryContainer.scrollIntoView({ behavior: "smooth" });
 };
+
+
 
 // ✅ Save dish entries to DB
 window.saveDishRowsToDB = async function (dishEntries) {
