@@ -1175,19 +1175,42 @@ window.addEventListener('beforeinstallprompt', (e) => {
   });
 });
 
-window.showUtilitySubSection = function (subSectionId) {
-  console.log(`Switching to Utility Sub-section: ${subSectionId}`);
+window.addEventListener("DOMContentLoaded", () => {
+  window.showSection = function (sectionId) {
+    console.log(`Switching to Section: ${sectionId}`);
 
-  document.querySelectorAll("div[id^='utility-']").forEach((el) => {
-    el.style.display = "none";
-  });
+    document.querySelectorAll("section, div[id^='utility-']").forEach((section) => {
+      section.style.display = "none";
+    });
 
-  const subSection = document.getElementById(subSectionId);
-  if (subSection) {
-    subSection.style.display = "block";
-  } else {
-    console.error(`Utility sub-section '${subSectionId}' not found.`);
-  }
-};
+    if (sectionId.startsWith("utility-")) {
+      const utilitiesSection = document.getElementById("utilities");
+      if (utilitiesSection) utilitiesSection.style.display = "block";
+    }
 
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+      targetSection.style.display = "block";
+      if (sectionId === "bike-summary") loadBikeSummary();
+    }
+  };
 
+  window.showUtilitySubSection = function (subSectionId) {
+    document.querySelectorAll("div[id^='utility-']").forEach((el) => {
+      el.style.display = "none";
+    });
+    const subSection = document.getElementById(subSectionId);
+    if (subSection) subSection.style.display = "block";
+  };
+
+  window.promptCalorieLogin = function () {
+    if (loggedInUsername) {
+      window.showSection('utility-daily-calorie');
+      window.loadDailyDishes();
+    } else {
+      document.getElementById('loginModal').style.display = 'block';
+    }
+  };
+
+  showSection("utilities");
+});
