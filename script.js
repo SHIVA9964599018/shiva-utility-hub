@@ -246,32 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-// ✅ Handle Feedback Submission
-document.getElementById("feedback-form").addEventListener("submit", async function (event) {
-    event.preventDefault();
 
-    let name = document.getElementById("name").value.trim();
-    let feedbackText = document.getElementById("feedbackText").value.trim();
-
-    if (!name || !feedbackText) {
-        alert("Please enter both name and feedback.");
-        return;
-    }
-
-    const { data, error } = await supabaseClient
-        .from("Feedback")
-        .insert([{ name: name, message: feedbackText }])
-        .select();
-
-    if (error) {
-        console.error("Error submitting feedback:", error.message);
-        document.getElementById("message").textContent = "Error submitting feedback. Try again!";
-    } else {
-        document.getElementById("message").textContent = "Feedback submitted successfully!";
-        document.getElementById("feedback-form").reset();
-        fetchFeedback();
-    }
-});
 
 // ✅ Fetch Feedback from Supabase
 async function fetchFeedback() {
