@@ -335,13 +335,13 @@ window.promptCalorieLogin = function () {
 
 
 window.handleCalorieLogin = async function () {
-  const username = document.getElementById("usernameInput").value.trim();
+  const username = document.getElementById("usernameInput").value.trim().toLowerCase();
   const password = document.getElementById("passwordInput").value.trim();
 
   const { data, error } = await supabaseClient
     .from('app_users')
     .select('*')
-    .eq('username', username)
+    .ilike('username', username)  // case-insensitive match
     .eq('password', password)
     .single();
 
@@ -350,13 +350,13 @@ window.handleCalorieLogin = async function () {
     return;
   }
 
- // loggedInUsername = data.username;
+  localStorage.setItem("user_id", data.username);  // stores exact case from DB
   document.getElementById("loginModal").style.display = "none";
   window.showSection('utility-daily-calorie');
   window.loadDishSummaryTable();
   await window.loadDailyDishes();
-
 };
+
 
 // Load food facts
 window.loadFoodFacts = async function () {
