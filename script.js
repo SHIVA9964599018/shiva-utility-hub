@@ -322,17 +322,30 @@ window.loadDishSummaryTable = async function () {
 
 
 // Login handlers
-window.promptCalorieLogin = function () {
+window.promptCalorieLogin = async function () {
   const userId = localStorage.getItem("user_id");
 
-  if (userId && userId.trim() !== "" && userId !== "null" && userId !== "undefined") {
-    console.log("✅ Logged in as:", userId);
-    window.showSection('utility-daily-calorie');
-    window.loadDishSummaryTable();
-  } else {
-    console.log("🔐 No user logged in — prompting login");
-    document.getElementById('loginModal').style.display = 'block';
+  if (userId && userId.trim() !== "") {
+    // 🔍 Verify this user actually exists in Supabase
+    const { data, error } = await supabaseClient
+      .from('app_users')
+      .select('username')
+      .eq('username', userId)
+      .maybeSingle();
+
+    if (!error && data) {
+      console.log("✅ Valid user found:", userId);
+      window.showSection('utility-daily-calorie');
+      window.loadDishSummaryTable();
+      return;
+    } else {
+      console.warn("⚠️ User ID in localStorage is stale. Clearing it.");
+      localStorage.removeItem("user_id");  // clear stale ID
+    }
   }
+
+  console.log("🔐 No valid login — showing login modal");
+  document.getElementById('loginModal').style.display = 'block';
 };
 
 
