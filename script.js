@@ -341,8 +341,8 @@ window.handleCalorieLogin = async function () {
   const { data, error } = await supabaseClient
     .from('app_users')
     .select('*')
-    .ilike('username', username)  // case-insensitive match
-    .eq('password', password)
+    .ilike('username', username)  // case-insensitive username
+    .eq('password', password)     // case-sensitive password
     .single();
 
   if (error || !data) {
@@ -350,12 +350,14 @@ window.handleCalorieLogin = async function () {
     return;
   }
 
-  localStorage.setItem("user_id", data.username);  // stores exact case from DB
+  // ✅ Only runs if data is present
+  localStorage.setItem("user_id", data.username);
   document.getElementById("loginModal").style.display = "none";
   window.showSection('utility-daily-calorie');
   window.loadDishSummaryTable();
   await window.loadDailyDishes();
 };
+
 
 
 // Load food facts
