@@ -43,3 +43,6 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+self.addEventListener("install", (event) => {
+  self.skipWaiting();  // ← important for instant SW activation
+});
