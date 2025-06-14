@@ -541,3 +541,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  localStorage.removeItem("user_id"); // force re-login every time
+});
