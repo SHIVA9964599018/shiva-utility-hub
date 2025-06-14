@@ -525,4 +525,3 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-localStorage.setItem("user_id", data.username);
