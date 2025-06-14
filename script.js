@@ -325,13 +325,16 @@ window.loadDishSummaryTable = async function () {
 window.promptCalorieLogin = function () {
   const userId = localStorage.getItem("user_id");
 
-  if (userId) {
+  if (userId && userId.trim() !== "" && userId !== "null" && userId !== "undefined") {
+    console.log("✅ Logged in as:", userId);
     window.showSection('utility-daily-calorie');
     window.loadDishSummaryTable();
   } else {
+    console.log("🔐 No user logged in — prompting login");
     document.getElementById('loginModal').style.display = 'block';
   }
 };
+
 
 
 window.handleCalorieLogin = async function () {
