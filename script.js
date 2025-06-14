@@ -5,6 +5,7 @@ const supabaseClient = createClient(
   "https://wzgchcvyzskespcfrjvi.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Z2NoY3Z5enNrZXNwY2ZyanZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE4NjQwNDEsImV4cCI6MjA1NzQ0MDA0MX0.UuAgu4quD9Vg80tOUSkfGJ4doOT0CUFEUeoHsiyeNZQ"
 );
+localStorage.removeItem("user_id"); // ✅ run IMMEDIATELY on script load
 
 window.dishNames = [];
 
@@ -541,6 +542,3 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  localStorage.removeItem("user_id"); // force re-login every time
-});
