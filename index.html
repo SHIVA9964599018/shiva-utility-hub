@@ -1,39 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shiva Utility Hub</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4CAF50">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
 </head>
 <body>
-  <!-- Loading Overlay -->
-  <div id="loading-overlay">
-    <div class="loading-box">
-      <p>Loading utility data, please wait...</p>
-    </div>
-  </div>
 
   <!-- Navigation Bar -->
   <nav>
-    <a href="#" data-sub="utility-add-dish" onclick="showUtilitySubSection('utility-add-dish')">Add Dish</a>
+    <a href="#" onclick="showUtilitySubSection('utility-add-dish')">Add Dish</a>
     <a href="#" onclick="promptCalorieLogin()">Daily Calorie</a>
-    <a href="#" data-sub="utility-food-facts" onclick="showUtilitySubSection('utility-food-facts');loadFoodFacts();">All Food Facts</a>
+    <a href="#" onclick="showUtilitySubSection('utility-food-facts'); loadFoodFacts();">All Food Facts</a>
+	<a href="#" onclick="showUtilitySubSection('utility-weight-tracker')">Weight Tracker</a>
   </nav>
 
   <!-- Install Prompt -->
   <p style="font-weight: bold; font-size: 1.1em; margin-top: 20px; padding-left: 20px;">
     📲 Install this app for a better experience!
   </p>
- 
   <button id="installApp" style="display: none;">📲 Install App</button>
+
+  <!-- Welcome Message -->
+  <div class="welcome-message" id="welcome-message" style="display: none;"></div>
+
+  <!-- Vision Message -->
+  <div class="vision-message">
+    I am building this website with love for my family and friends to become more aware of their eating habits and the calorie values of what they eat — to help them lead a healthier, more informed life.
+  </div>
 
 
   <!-- Utilities Section -->
   <section id="utilities" style="padding:20px;">
-    <!-- Add Dish -->
+    <!-- Add Dish Section -->
     <div id="utility-add-dish" style="display:none;">
       <h3>Add Dish Nutrition Info</h3>
       <form id="nutrition-form" class="nutrition-form">
@@ -47,52 +50,107 @@
       </form>
       <p id="nutrition-message" style="margin-top: 20px;"></p>
     </div>
+	<div id="utility-daily-calorie" style="display: none;">
+	 <div class="calorie-wrapper">
+		<h3 class="calorie-heading">Daily Calorie Calculator</h3>
 
-    <!-- Daily Calorie -->
-	<div id="utility-daily-calorie" style="display:none;">
-	  <div style="display: block;">
-		<!-- LEFT Input Section -->
-		<div>
-		  <h3>Daily Calorie Calculator</h3>
-		  <div><h4>Breakfast</h4><button onclick="addDishRow('breakfast')">+ Add</button></div>
-		  <div id="breakfast-container"></div>
+		<div class="meal-sections">
+		  <!-- Breakfast -->
+			<details open>
+			  <summary>
+				<div class="meal-header">
+				  <strong>Breakfast</strong>
+				  <button onclick="addDishRow('breakfast')" class="add-btn-inline">+ Add</button>
+				</div>
+			  </summary>
+			  <div id="breakfast-container"></div>
+			</details>
 
-		  <div><h4>Lunch</h4><button onclick="addDishRow('lunch')">+ Add</button></div>
-		  <div id="lunch-container"></div>
+			<!-- Lunch -->
+			<details open>
+			  <summary>
+				<div class="meal-header">
+				  <strong>Lunch</strong>
+				  <button onclick="addDishRow('lunch')" class="add-btn-inline">+ Add</button>
+				</div>
+			  </summary>
+			  <div id="lunch-container"></div>
+			</details>
 
-		  <div><h4>Dinner</h4><button onclick="addDishRow('dinner')">+ Add</button></div>
-		  <div id="dinner-container"></div>
-
-		  <button id="calculate-btn" style="margin-top: 20px;">Calculate</button>
-		  <div id="calorie-result" style="margin-top: 20px;"></div>
+			<!-- Dinner -->
+			<details open>
+			  <summary>
+				<div class="meal-header">
+				  <strong>Dinner</strong>
+				  <button onclick="addDishRow('dinner')" class="add-btn-inline">+ Add</button>
+				</div>
+			  </summary>
+			  <div id="dinner-container"></div>
+			</details>
 		</div>
 
-		<!-- Summary BELOW -->
-		<div id="summary-container" style="display: none; margin-top: 30px;">
-		  <h3>Saved Dish Summary (From Supabase)</h3>
-		  <table border="1" cellpadding="6" cellspacing="0" style="width: 50%;">
-			<thead>
-			  <tr><th>Dish Name</th><th>Qty (g)</th><th>Calories</th><th>Protein</th><th>Carbs</th><th>Fibre</th><th>Fats</th></tr>
-			</thead>
-			<tbody id="dish-summary-body"></tbody>
-		  </table>
-		</div>
+		<button id="calculate-btn">Calculate</button>
 	  </div>
 	</div>
 
+<div id="summary-container" style="display: none; margin-top: 30px;">
+  <h3>Dish Summary </h3>
+  
+  <!-- Scroll wrapper -->
+  <div class="table-scroll-wrapper">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Dish Name</th>
+          <th>Calories</th>
+          <th>Protein</th>
+          <th>Fibre</th>
+          <th>Carbs</th>
+          <th>Fats</th>
+        </tr>
+      </thead>
+      <tbody id="dish-summary-body"></tbody>
+    </table>
+  </div>
+</div>
 
 
-    <!-- All Food Facts -->
+
+	<!-- Results will appear here -->
+	<div id="calorie-result" style="margin-top: 20px;"></div>
+
+    <!-- All Food Facts Section -->
     <div id="utility-food-facts" style="display:none;">
       <h3>All Food Facts</h3>
       <div id="food-facts-table-container">
-		 <table id="food-facts-table" class="sortable" border="1" cellspacing="0" cellpadding="6">
-          <thead><tr><th>Dish Name</th><th>Cal/100g</th><th>Protein</th><th>Carbs</th><th>Fibre</th><th>Fats</th></tr></thead>
+        <table id="food-facts-table" class="sortable" border="1" cellspacing="0" cellpadding="6">
+          <thead>
+            <tr><th>Dish Name</th><th>Cal/100g</th><th>Protein</th><th>Fibre</th><th>Carbs</th><th>Fats</th></tr>
+          </thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
+	<!-- weight tracker -->
+	<div id="utility-weight-tracker" style="display:none;">
+	  <h3>Weight Tracker</h3>
+	  <form id="weight-upload-form">
+		<input type="file" accept="image/*" id="weight-image" />
+		<br>
+		<label>Date: <input type="date" id="weight-date" required></label>
+		<label>Weight (kg): <input type="number" id="weight-value" step="0.1" required></label>
+		<button type="submit">Upload Entry</button>
+	  </form>
+	  <div id="weight-timeline" style="margin-top:20px;">
+		<h4>Progress Timeline</h4>
+		<ul id="timeline-list" style="list-style-type: none; padding-left: 0;"></ul>
+	  </div>
+	</div>
+
+	
   </section>
+
+
 
   <!-- Login Modal -->
   <div id="loginModal" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -50%); background:#fff; padding:20px; border:1px solid #ccc; box-shadow:0 2px 10px rgba(0,0,0,0.2); z-index:9999;">
@@ -102,19 +160,23 @@
     <button onclick="handleCalorieLogin()">Login</button>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+  <!-- Script Dependencies -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
   <script type="module" src="script.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('Service Worker registered'))
-        .catch(err => console.error('Service Worker error:', err));
-    }
-  </script>
-  
 
+  <!-- Inline to show welcome message -->
+<script>
+  window.onload = () => {
+    const userId = localStorage.getItem("user_id");
+    if (userId) {
+      const welcomeDiv = document.getElementById("welcome-message");
+      if (welcomeDiv) {
+        welcomeDiv.textContent = `Welcome, ${userId}!`;
+        welcomeDiv.style.display = "block";
+      }
+    }
+  };
+</script>
 </body>
 </html>
-

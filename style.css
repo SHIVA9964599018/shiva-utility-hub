@@ -1,7 +1,300 @@
-body {
-  font-family: Arial, sans-serif;
+/* Viewport and top-level layout control */
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;    /* ❌ disables horizontal scroll */
+  overflow-y: auto;      /* ✅ enables vertical scroll */
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
+
+/* Force all elements to stay within screen width */
+*, *::before, *::after {
+  box-sizing: border-box;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Enable scroll when needed */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Force table to be scrollable on narrow screens */
+.summary-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 600px;
+  table-layout: auto;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #ccc;
+  white-space: nowrap; /* ✅ prevents line break */
+}
+
+/* ✅ Only widen the first column (Dish Name) */
+.summary-table th:first-child,
+.summary-table td:first-child {
+  min-width: 160px;  /* or adjust as needed */
+  white-space: normal; /* allow wrapping if name is long */
+}
+
+
+/* Responsive behavior for larger screens */
+@media (min-width: 768px) {
+  .table-scroll-wrapper {
+    max-width: 50%;
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
+
+  .meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 5px;
+  }
+
+
+
+/* Prevent large elements from breaking layout */
+img, table, canvas, iframe, input, select, textarea, button {
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+
+/* Ensure wrapping on long words or wide buttons */
+summary, button, .btn, .add-btn-inline {
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Optional: prevent zoom issues on mobile */
+meta[name="viewport"] {
+  content: width=device-width, initial-scale=1.0;
+}
+summary {
+  display: flex;
+  justify-content: space-between; /* Push left and right */
+  align-items: center;
+  padding: 6px 12px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  font-size: 16px; /* unify font size for both text and button */
+}
+
+/* Style the "+ Add" button */
+.add-btn-inline {
+  background-color: #007bff;
+  color: #fff;
+  font-size: 0.85em;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.add-btn-inline:hover {
+  background-color: #0056b3;
+}
+
+.remove-btn{
+  background-color: #007bff;
+  color: #fff;
+  font-size: 0.85em;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 12px;
+}
+.remove-btn:hover {
+  background-color: #c82333;
+}
+
+
+
+.welcome-message {
+  background-color: #e8f5e9;
+  padding: 15px;
+  border-left: 5px solid #4CAF50;
+  margin: 10px 20px;
+  font-size: 1.1em;
+}
+
+.vision-message {
+  background-color: #e3f2fd;
+  padding: 15px;
+  border-left: 6px solid #2196f3;
+  font-size: 1.05em;
+  color: #0d47a1;
+  margin: 20px;
+  border-radius: 6px;
+}
+summary strong {
+  font-weight: bold;
+  font-size: 16px; /* match button font size */
+  line-height: 1.2;
+}
+
+details {
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+
+
+
+details summary {
+  position: relative;
+  list-style: none;
+}
+details > summary {
+  list-style: none;
+}
+
+
+details[open] summary::before {
+  content: "-";
+  position: absolute;
+  left: -20px;
+  font-size: 1.2em;
+  color: #4CAF50;
+}
+
+details summary::before {
+  content: "+";
+  position: absolute;
+  left: -20px;
+  font-size: 1.2em;
+  color: #4CAF50;
+}
+
+
+summary.meal-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding-right: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+summary.meal-summary strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.1em;
+}
+
+
+.add-btn-inline:hover {
+  background-color: #388e3c;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+
+
+#summary-container thead {
+  background-color: #4CAF50; /* Green header */
+  color: white;
+}
+
+#summary-container thead th {
+  padding: 12px;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: left;      /* ✅ Align left */
+  background-color: #ffe082; /* Keep the yellow highlight */
+  color: #4e342e;         /* Dark brown for contrast */
+}
+
+
+#summary-container td {
+  padding: 10px;
+  text-align: center;
+  font-weight: 500;
+}
+
+#summary-container tr:nth-child(even):not(:last-child) {
+  background-color: #f5f5f5;
+}
+
+#summary-container td:first-child {
+  text-align: left;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#summary-container tr:last-child {
+  background-color: #ffe082;  /* Amber highlight for total */
+  font-weight: bold;
+  color: #4e342e;
+}
+#summary-container table tr:last-child {
+  background-color: #fff8e1;  /* Soft yellow */
+  font-weight: bold;
+  color: #3e2723;
+}
+#summary-container table tr:nth-child(even):not(:last-child) {
+  background-color: #f9f9f9;
+}
+
+#summary-container table, th, td {
+  border: 1px solid #ddd;
+}
+.calorie-container {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.calorie-wrapper {
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0; /* Left aligned */
+}
+
+.meal-sections {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Forces children to left */
+  gap: 15px;
+  
+}
+
+.meal-sections details {
+  width: 100%;
+  max-width: 600px;
+}
+
+.add-btn-inline {
+  margin: 5px 0 10px 10px;
+}
+
+
+
+
 
 nav {
   display: flex;
@@ -453,20 +746,18 @@ blockquote {
 .dish-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 2px;
   margin-bottom: 8px;
 }
 
-.dish-row input {
-  padding: 6px;
-}
 
 .dish-row input.dish-name {
   width: 200px;
 }
 
 .dish-row input.dish-grams {
-  width: 100px;
+  width: 50px;
+  margin-right: 4px;
 }
 
 .dish-row button {
@@ -560,12 +851,7 @@ blockquote {
 
 
 
-.dish-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
+
 
 .responsive-dish-name {
   width: 120px;
@@ -579,14 +865,7 @@ blockquote {
   padding: 4px;
 }
 
-.remove-btn {
-  padding: 4px 8px;
-  font-size: 14px;
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
+
 
 @media (max-width: 480px) {
   .responsive-dish-name {
@@ -599,11 +878,21 @@ blockquote {
     font-size: 12px;
   }
 
-  .remove-btn {
-    font-size: 12px;
-    padding: 2px 6px;
-  }
+
+
+
+
+#calculate-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
 }
 
-
-
+#calculate-btn:hover {
+  background-color: #218838;
+}

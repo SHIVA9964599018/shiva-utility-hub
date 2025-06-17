@@ -35,11 +35,14 @@ window.showSection = function (sectionId) {
 };
 
 // Show utility sub-section
-window.showUtilitySubSection = function (subSectionId) {
-  document.querySelectorAll("div[id^='utility-']").forEach(el => el.style.display = "none");
-  const target = document.getElementById(subSectionId);
+window.showUtilitySubSection = function (sectionId) {
+  const sections = document.querySelectorAll("#utilities > div");
+  sections.forEach(sec => sec.style.display = "none");
+
+  const target = document.getElementById(sectionId);
   if (target) target.style.display = "block";
 };
+
 
 let dishNames = [];
 
@@ -129,6 +132,7 @@ window.setupAutocomplete = function (input) {
 
 // ✅ Add a dish row
 window.addDishRow = function (mealType, name = "", grams = "") {
+console.log(`clicked on Add for ${mealType}`);
   const container = document.getElementById(`${mealType}-container`);
   const row = document.createElement("div");
   row.className = "dish-row";
@@ -136,7 +140,7 @@ window.addDishRow = function (mealType, name = "", grams = "") {
   row.innerHTML = `
     <input type="text" class="dish-name responsive-dish-name" value="${name}" placeholder="Dish Name" />
     <input type="number" class="dish-grams responsive-dish-grams" value="${grams}" placeholder="gms" />
-    <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✖</button>
+    <button class="remove-btn" onclick="this.parentElement.remove()">Remove</button>
   `;
 
   container.appendChild(row);
@@ -196,13 +200,14 @@ window.calculateCalories = async function () {
   }
 
   // Show calculated totals
-  document.getElementById("calorie-result").innerHTML = `
-    <strong>Total:</strong><br>
-    Calories: ${totals.calories.toFixed(2)} kcal<br>
-    Protein: ${totals.protein.toFixed(2)} g<br>
-    Carbs: ${totals.carbs.toFixed(2)} g<br>
-    Fibre: ${totals.fibre.toFixed(2)} g<br>
-    Fats: ${totals.fats.toFixed(2)} g`;
+document.getElementById("calorie-result").innerHTML = `
+  <div class="macro-box">
+    <div><span class="macro-label">Calories:</span> ${totals.calories.toFixed(2)} kcal</div>
+    <div><span class="macro-label">Protein:</span> ${totals.protein.toFixed(2)} g</div>
+    <div><span class="macro-label">Carbs:</span> ${totals.carbs.toFixed(2)} g</div>
+    <div><span class="macro-label">Fibre:</span> ${totals.fibre.toFixed(2)} g</div>
+    <div><span class="macro-label">Fats:</span> ${totals.fats.toFixed(2)} g</div>
+  </div>`;
 
   // Save to DB and show summary
   await window.saveDishRowsToDB(dishEntries);
@@ -289,15 +294,15 @@ window.loadDishSummaryTable = async function () {
 
   dishes.forEach(dish => {
     const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${dish.dish_name}</td>
-      <td>${dish.grams.toFixed(1)}</td>
-      <td>${dish.calories.toFixed(1)}</td>
-      <td>${dish.protein.toFixed(1)}</td>
-      <td>${dish.carbs.toFixed(1)}</td>
-      <td>${dish.fibre.toFixed(1)}</td>
-      <td>${dish.fats.toFixed(1)}</td>
-    `;
+row.innerHTML = `
+  <td>${dish.dish_name}</td>
+  <td>${dish.calories.toFixed(1)}</td>
+  <td>${dish.protein.toFixed(1)}</td>
+  <td>${dish.fibre.toFixed(1)}</td>
+  <td>${dish.carbs.toFixed(1)}</td>
+  <td>${dish.fats.toFixed(1)}</td>
+`;
+
     tbody.appendChild(row);
 
     totalCalories += dish.calories || 0;
@@ -310,24 +315,25 @@ window.loadDishSummaryTable = async function () {
   const totalRow = document.createElement("tr");
   totalRow.style.backgroundColor = "#f0f0f0";
   totalRow.style.fontWeight = "bold";
-  totalRow.innerHTML = `
-    <td colspan="2">Total</td>
-    <td>${totalCalories.toFixed(1)}</td>
-    <td>${totalProtein.toFixed(1)}</td>
-    <td>${totalCarbs.toFixed(1)}</td>
-    <td>${totalFibre.toFixed(1)}</td>
-    <td>${totalFats.toFixed(1)}</td>
-  `;
+totalRow.innerHTML = `
+  <td><strong>Total</strong></td>
+  <td><strong>${totalCalories.toFixed(1)}</strong></td>
+  <td><strong>${totalProtein.toFixed(1)}</strong></td>
+  <td><strong>${totalFibre.toFixed(1)}</strong></td>
+  <td><strong>${totalCarbs.toFixed(1)}</strong></td>
+  <td><strong>${totalFats.toFixed(1)}</strong></td>
+`;
+
+
   tbody.appendChild(totalRow);
 };
 
 
-// Login handlers
 window.promptCalorieLogin = async function () {
   const userId = localStorage.getItem("user_id");
 
   if (userId && userId.trim() !== "") {
-    // 🔍 Verify this user actually exists in Supabase
+    // Verify user in Supabase
     const { data, error } = await supabaseClient
       .from('app_users')
       .select('username')
@@ -336,18 +342,33 @@ window.promptCalorieLogin = async function () {
 
     if (!error && data) {
       console.log("✅ Valid user found:", userId);
-      window.showSection('utility-daily-calorie');
-      window.loadDishSummaryTable();
+      
+      const welcomeDiv = document.getElementById("welcome-message");
+      if (welcomeDiv) {
+        welcomeDiv.textContent = `Welcome, ${userId}!`;
+        welcomeDiv.style.display = "block";
+      }
+
+      // ✅ Show the Daily Calorie section
+      window.showSection("utility-daily-calorie");
       return;
     } else {
-      console.warn("⚠️ User ID in localStorage is stale. Clearing it.");
-      localStorage.removeItem("user_id");  // clear stale ID
+      console.warn("⚠️ Stale user ID found. Clearing.");
+      localStorage.removeItem("user_id");
     }
   }
 
+  // Show login modal
   console.log("🔐 No valid login — showing login modal");
   document.getElementById('loginModal').style.display = 'block';
 };
+
+
+// 🔁 Run on app load
+window.addEventListener('DOMContentLoaded', () => {
+  window.promptCalorieLogin();
+});
+
 
 
 
@@ -371,7 +392,7 @@ window.handleCalorieLogin = async function () {
   localStorage.setItem("user_id", data.username);
   document.getElementById("loginModal").style.display = "none";
   window.showSection('utility-daily-calorie');
-  window.loadDishSummaryTable();
+ // window.loadDishSummaryTable();
   await window.loadDailyDishes();
 };
 
@@ -398,6 +419,7 @@ window.loadFoodFacts = async function () {
     enableTableSorting();  // <-- important call added here
   }
 };
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -537,4 +559,59 @@ if ('serviceWorker' in navigator) {
     };
   });
 }
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js').then(registration => {
+    registration.onupdatefound = () => {
+      const newWorker = registration.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          console.log("New version available. Reloading...");
+          window.location.reload(); // 🔁 Force reload to apply new cache
+        }
+      };
+    };
+  });
+}
+
+// Weight Tracker Script
+window.weightEntries = [];
+
+window.handleWeightUpload = function (event) {
+  event.preventDefault();
+  const date = document.getElementById("weight-date").value;
+  const weight = document.getElementById("weight-value").value;
+  const fileInput = document.getElementById("weight-image");
+
+  if (fileInput.files.length > 0) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageSrc = e.target.result;
+      window.weightEntries.push({ date, weight, imageSrc });
+      window.updateWeightTimeline();
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  }
+};
+
+window.updateWeightTimeline = function () {
+  const list = document.getElementById("timeline-list");
+  list.innerHTML = "";
+  window.weightEntries.slice().reverse().forEach(entry => {
+    const item = document.createElement("li");
+    item.style.marginBottom = "15px";
+    item.innerHTML = `<strong>${entry.date}</strong> - ${entry.weight} kg<br><img src="${entry.imageSrc}" style="width:100px; height:auto; border:1px solid #ccc; margin-top:5px;">`;
+    list.appendChild(item);
+  });
+};
+
+// Attach event listener after DOM is ready
+window.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("weight-upload-form");
+  if (form) {
+    form.addEventListener("submit", window.handleWeightUpload);
+  }
+});
+
+
 
