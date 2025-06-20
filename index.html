@@ -90,37 +90,44 @@
 		</div>
 
 		<button id="calculate-btn">Calculate</button>
+		<div id="calorie-result" style="margin-top: 20px;"></div>
 	  </div>
 	</div>
 
+
 <div id="summary-container" style="display: none; margin-top: 30px;">
-  <h3>Dish Summary </h3>
-  
-  <!-- Scroll wrapper -->
-  <div class="table-scroll-wrapper">
-    <table class="summary-table">
-      <thead>
-        <tr>
-          <th>Dish Name</th>
-          <th>Calories</th>
-          <th>Protein</th>
-          <th>Fibre</th>
-          <th>Carbs</th>
-          <th>Fats</th>
-        </tr>
-      </thead>
-      <tbody id="dish-summary-body"></tbody>
-    </table>
-  </div>
+  <details id="summary-toggle">
+    <summary style="font-size: 1.2rem; font-weight: bold; cursor: pointer;">
+       Dish Summary (click to expand)
+    </summary>
+
+    <div class="table-scroll-wrapper" style="margin-top: 10px;">
+      <table class="summary-table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color: #f0f0f0;">
+            <th style="padding: 6px; border: 1px solid #ccc;">Dish Name</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Quantity (gm)</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Calories</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Protein</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Fibre</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Carbs</th>
+            <th style="padding: 6px; border: 1px solid #ccc;">Fats</th>
+          </tr>
+        </thead>
+        <tbody id="dish-summary-body"></tbody>
+      </table>
+    </div>
+  </details>
 </div>
 
 
 
-	<!-- Results will appear here -->
-	<div id="calorie-result" style="margin-top: 20px;"></div>
 
+	<!-- Results will appear here -->
+
+	<div id="utility-food-facts" style="display:none;">
+	<div class="table-scroll-wrapper">
     <!-- All Food Facts Section -->
-    <div id="utility-food-facts" style="display:none;">
       <h3>All Food Facts</h3>
       <div id="food-facts-table-container">
         <table id="food-facts-table" class="sortable" border="1" cellspacing="0" cellpadding="6">
@@ -131,6 +138,7 @@
         </table>
       </div>
     </div>
+	</div>
 	<!-- weight tracker -->
 	<div id="utility-weight-tracker" style="display:none;">
 	  <h3>Weight Tracker</h3>

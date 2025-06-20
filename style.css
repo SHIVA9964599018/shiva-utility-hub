@@ -25,15 +25,15 @@ html, body {
 
 /* Force table to be scrollable on narrow screens */
 .summary-table {
-  border-collapse: collapse;
+ /* border-collapse: collapse;*/
   width: max-content;
-  min-width: 600px;
+  min-width: 400px;
   table-layout: auto;
 }
 
 .summary-table th,
 .summary-table td {
-  padding: 8px 12px;
+  padding: 4px 6px;
   text-align: left;
   border: 1px solid #ccc;
   white-space: nowrap; /* ✅ prevents line break */
@@ -42,6 +42,7 @@ html, body {
 /* ✅ Only widen the first column (Dish Name) */
 .summary-table th:first-child,
 .summary-table td:first-child {
+  text-align: left;
   min-width: 160px;  /* or adjust as needed */
   white-space: normal; /* allow wrapping if name is long */
 }
@@ -56,12 +57,15 @@ html, body {
   }
 }
 
-  .meal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-right: 5px;
-  }
+ .meal-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 👈 items will sit left-aligned */
+ /* gap: 8px;   */
+  padding-right: 10px;
+  padding: 0;
+}
 
 
 
@@ -87,7 +91,7 @@ summary {
   display: flex;
   justify-content: space-between; /* Push left and right */
   align-items: center;
-  padding: 6px 12px;
+  padding: 2px 6px;
   background-color: #f8f8f8;
   border-radius: 4px;
   font-size: 16px; /* unify font size for both text and button */
@@ -105,9 +109,6 @@ summary {
   margin-left: 12px;
 }
 
-.add-btn-inline:hover {
-  background-color: #0056b3;
-}
 
 .remove-btn{
   background-color: #007bff;
@@ -145,14 +146,12 @@ summary {
 summary strong {
   font-weight: bold;
   font-size: 16px; /* match button font size */
-  line-height: 1.2;
+  line-height: 0.6;
 }
 
 details {
-  margin-top: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 10px;
   background-color: #f9f9f9;
 }
 
@@ -185,22 +184,7 @@ details summary::before {
 }
 
 
-summary.meal-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
-  padding-right: 10px;
-  width: 100%;
-  box-sizing: border-box;
-}
 
-summary.meal-summary strong {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 1.1em;
-}
 
 
 .add-btn-inline:hover {
@@ -211,6 +195,17 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+#summary-container table {
+  border-collapse: collapse;         /* merge borders */
+  border: 2px solid #333;            /* outer border of table */
+}
+
+#summary-container th,
+#summary-container td {
+  border: 2px solid #333;            /* inner cell borders */
+  padding: 6px 10px;
+  text-align: left;
+}
 
 
 #summary-container thead {
@@ -219,18 +214,18 @@ details > summary::-webkit-details-marker {
 }
 
 #summary-container thead th {
-  padding: 12px;
+  padding: 0px 1px 0px 0px;
   font-size: 1em;
   font-weight: bold;
   text-align: left;      /* ✅ Align left */
-  background-color: #ffe082; /* Keep the yellow highlight */
-  color: #4e342e;         /* Dark brown for contrast */
+  background-color: #007bff; /* Keep the blue highlight */
+  color: white;         /* Dark brown for contrast */
 }
 
 
 #summary-container td {
-  padding: 10px;
-  text-align: center;
+  padding: 1px 1px !important;
+  text-align: left;
   font-weight: 500;
 }
 
@@ -242,6 +237,8 @@ details > summary::-webkit-details-marker {
   text-align: left;
   font-weight: bold;
   color: #2c3e50;
+  /*max-width: 100px;  */    /* Set a minimum width */
+  /*word-wrap: break-word;*/
 }
 
 #summary-container tr:last-child {
@@ -260,7 +257,24 @@ details > summary::-webkit-details-marker {
 
 #summary-container table, th, td {
   border: 1px solid #ddd;
+  background-color: #ffffff;
 }
+
+.table-scroll-wrapper::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 6px;
+}
+
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+
 .calorie-container {
   max-width: 650px;
   margin: 0 auto;
@@ -717,7 +731,7 @@ blockquote {
 }
 
 .meal-container input {
-  padding: 5px;
+  padding: 3px;
   min-width: 150px;
 }
 .autocomplete-wrapper {
@@ -761,7 +775,7 @@ blockquote {
 }
 
 .dish-row button {
-  padding: 4px 10px;
+  padding: 4px 6px;
 }
 
 #food-facts-table {

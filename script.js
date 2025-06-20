@@ -40,6 +40,7 @@ window.showUtilitySubSection = function (sectionId) {
   sections.forEach(sec => sec.style.display = "none");
 
   const target = document.getElementById(sectionId);
+  console.log('the section id clicked');
   if (target) target.style.display = "block";
 };
 
@@ -201,13 +202,20 @@ window.calculateCalories = async function () {
 
   // Show calculated totals
 document.getElementById("calorie-result").innerHTML = `
-  <div class="macro-box">
-    <div><span class="macro-label">Calories:</span> ${totals.calories.toFixed(2)} kcal</div>
-    <div><span class="macro-label">Protein:</span> ${totals.protein.toFixed(2)} g</div>
-    <div><span class="macro-label">Carbs:</span> ${totals.carbs.toFixed(2)} g</div>
-    <div><span class="macro-label">Fibre:</span> ${totals.fibre.toFixed(2)} g</div>
-    <div><span class="macro-label">Fats:</span> ${totals.fats.toFixed(2)} g</div>
-  </div>`;
+  <div style="display: flex; flex-direction: column; gap: 6px; font-family: Arial, sans-serif; font-size: 1rem; margin-top: 10px;">
+    <span style="background: #1976d2; color: white; padding: 8px 16px; border-radius: 20px; width: 160px;">Calories: ${totals.calories.toFixed(0)}</span>
+    <span style="background: #1976d2; color: white; padding: 8px 16px; border-radius: 20px; width: 160px;">Protein: ${totals.protein.toFixed(0)}</span>
+    <span style="background: #1976d2; color: white; padding: 8px 16px; border-radius: 20px; width: 160px;">Fibre: ${totals.fibre.toFixed(0)}</span>
+    <span style="background: #1976d2; color: white; padding: 8px 16px; border-radius: 20px; width: 160px;">Carbs: ${totals.carbs.toFixed(0)}</span>
+    <span style="background: #1976d2; color: white; padding: 8px 16px; border-radius: 20px; width: 160px;">Fats: ${totals.fats.toFixed(0)}</span>
+  </div>
+`;
+
+
+
+
+
+
 
   // Save to DB and show summary
   await window.saveDishRowsToDB(dishEntries);
@@ -290,12 +298,12 @@ window.loadDishSummaryTable = async function () {
   const tbody = document.getElementById("dish-summary-body");
   tbody.innerHTML = "";
 
-  let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFibre = 0, totalFats = 0;
-
+  let totalCalories = 0, totalGrams=0,totalProtein = 0, totalCarbs = 0, totalFibre = 0, totalFats = 0;
   dishes.forEach(dish => {
     const row = document.createElement("tr");
 row.innerHTML = `
   <td>${dish.dish_name}</td>
+  <td>${dish.grams.toFixed(1)}</td>
   <td>${dish.calories.toFixed(1)}</td>
   <td>${dish.protein.toFixed(1)}</td>
   <td>${dish.fibre.toFixed(1)}</td>
@@ -304,7 +312,7 @@ row.innerHTML = `
 `;
 
     tbody.appendChild(row);
-
+	totalGrams += dish.grams || 0;
     totalCalories += dish.calories || 0;
     totalProtein += dish.protein || 0;
     totalCarbs += dish.carbs || 0;
@@ -317,6 +325,7 @@ row.innerHTML = `
   totalRow.style.fontWeight = "bold";
 totalRow.innerHTML = `
   <td><strong>Total</strong></td>
+  <td><strong>${totalGrams.toFixed(1)}</strong></td>
   <td><strong>${totalCalories.toFixed(1)}</strong></td>
   <td><strong>${totalProtein.toFixed(1)}</strong></td>
   <td><strong>${totalFibre.toFixed(1)}</strong></td>
